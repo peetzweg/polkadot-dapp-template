@@ -4,7 +4,7 @@ import { Button } from "./components/ui/button"
 function App() {
   const { setTheme, theme } = useTheme()
   return (
-    <div className="v-screen flex h-screen flex-col items-center justify-center">
+    <div className="v-screen flex h-screen flex-col items-center justify-center gap-4">
       <h1 className="text-2xl">Hello Proof of Ink</h1>
       <Button
         onClick={() => {
