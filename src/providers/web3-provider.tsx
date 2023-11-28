@@ -1,4 +1,8 @@
-import { web3Accounts, web3Enable } from "@polkadot/extension-dapp"
+import {
+  web3Accounts,
+  web3Enable,
+  web3FromSource,
+} from "@polkadot/extension-dapp"
 import { useMutation } from "@tanstack/react-query"
 import { createContext, useContext } from "react"
 import { mutationWeb3Enable } from "../api/mutationWeb3Enable"
@@ -8,21 +12,26 @@ type InjectedExtensions = Awaited<ReturnType<typeof web3Enable>>[0]
 
 interface Web3ProviderProps {
   children: React.ReactNode
-  storageKey?: string
 }
 
 interface Web3ProviderState {
   accounts: InjectedAccountWithMeta[]
+  currentAccount: InjectedAccountWithMeta | null
   connect: () => void
   extensions: InjectedExtensions[]
+  injector: InjectedExtensions | null
   isConnected: boolean
+  selectAccount: (accountAddress: string) => void
 }
 
 const initialState: Web3ProviderState = {
   accounts: [],
+  currentAccount: null,
   connect: () => null,
   extensions: [],
+  injector: null,
   isConnected: false,
+  selectAccount: () => null,
 }
 
 const Web3ProviderContext = createContext<Web3ProviderState>(initialState)
@@ -30,17 +39,34 @@ const Web3ProviderContext = createContext<Web3ProviderState>(initialState)
 export function Web3Provider({ children, ...props }: Web3ProviderProps) {
   const {
     mutate: connect,
-    data,
+    data: connectResult,
     isSuccess,
   } = useMutation({
     mutationFn: mutationWeb3Enable,
   })
 
+  const { data: selectResult, mutate: selectAccount } = useMutation({
+    mutationFn: async (account: string) => {
+      const selectedAccount = connectResult?.accounts.find(
+        (acc) => acc.address === account,
+      )
+      if (!selectedAccount) throw new Error("Account not available")
+
+      return {
+        currentAccount: selectedAccount,
+        injector: await web3FromSource(selectedAccount.meta.source),
+      }
+    },
+  })
+
   const value = {
-    extensions: data?.extensions ?? [],
-    accounts: data?.accounts ?? [],
+    accounts: connectResult?.accounts ?? [],
     connect,
+    extensions: connectResult?.extensions ?? [],
+    injector: selectResult?.injector ?? null,
+    currentAccount: selectResult?.currentAccount ?? null,
     isConnected: isSuccess,
+    selectAccount,
   }
 
   return (

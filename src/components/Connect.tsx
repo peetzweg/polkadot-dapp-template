@@ -4,5 +4,5 @@ import { Button } from "./ui/button"
 export const Connect: React.FC = () => {
   const { connect } = useWeb3()
 
-  return <Button onClick={connect}>Connect</Button>
+  return <Button onClick={connect}>Connect to DApp</Button>
 }
