@@ -1,5 +1,5 @@
 {
-  "name": "proof-of-ink-dapp",
+  "name": "polkadot-dapp-template",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,8 +12,10 @@
     "prettier": "prettier . --write"
   },
   "dependencies": {
+    "@polkadot/extension-dapp": "^0.46.6",
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-slot": "^1.0.2",
+    "@tanstack/react-query": "^5.8.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "react": "^18.2.0",
@@ -22,6 +24,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.8.4",
     "@types/node": "^20.10.0",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
