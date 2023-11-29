@@ -1,30 +1,33 @@
-# React + TypeScript + Vite
+# Polkadot DApp Template (WIP)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Todo
 
-Currently, two official plugins are available:
++ ~~fix api types~~
++ use [`@polkadot/typegen`](https://polkadot.js.org/docs/api/examples/promise/typegen) instead of `@polkadot/api-augment`
++ allow for passing status callback? Would this be cool?
++ context guards which assure `api`, `currentAccount` etc is set
++ eager connect?
++ rotate RPCs
++ ~~RPC from url~~
++ check if pallet is available
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## Goals
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
++ don't use centralized services
++ don't require a deployed backend
++ production ready settings
++ decentralized deployment possible
++ runnable locally
++ best typescript experience possible
++ light client first
 
-- Configure the top-level `parserOptions` property like this:
+## Stack
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
-    project: ["./tsconfig.json", "./tsconfig.node.json"],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
++ typescript
++ vite
++ tailwindcss
++ shadcn/ui
++ react-query
++ polkadotjs/api
++ (polkadotjs/api-augment)
