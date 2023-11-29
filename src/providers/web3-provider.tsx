@@ -5,7 +5,7 @@ import {
   web3FromSource,
 } from "@polkadot/extension-dapp"
 import { UseMutateFunction, useMutation, useQuery } from "@tanstack/react-query"
-import { createContext, useContext } from "react"
+import { createContext, useCallback, useContext } from "react"
 import { mutationWeb3Enable } from "../api/mutationWeb3Enable"
 import { queryWeb3API } from "../api/queryWeb3API"
 
@@ -21,6 +21,7 @@ interface Web3ProviderState {
   api: ApiPromise | null
   connect: UseMutateFunction
   currentAccount: InjectedAccountWithMeta | null
+  disconnect: () => void
   extensions: InjectedExtensions[]
   injector: InjectedExtensions | null
   isConnected: boolean
@@ -33,6 +34,7 @@ const initialState: Web3ProviderState = {
   api: null,
   connect: () => null,
   currentAccount: null,
+  disconnect: () => null,
   extensions: [],
   injector: null,
   isConnected: false,
@@ -42,22 +44,32 @@ const initialState: Web3ProviderState = {
 
 const Web3ProviderContext = createContext<Web3ProviderState>(initialState)
 
-const ENDPOINT = "wss://rpc.polkadot.io"
+// const ENDPOINT = "wss://rpc.polkadot.io"
+const ENDPOINT = "ws://127.0.0.1:9944"
 
 export function Web3Provider({ children, ...props }: Web3ProviderProps) {
+  /* Polkadot JS API */
   const { data: api, isLoading: isReady } = useQuery({
     queryKey: ["Web3API", ENDPOINT],
     queryFn: () => queryWeb3API(ENDPOINT),
   })
+
+  /* Connect Mutation */
   const {
     mutate: connect,
     data: connectResult,
     isSuccess,
+    reset: resetConnect,
   } = useMutation({
     mutationFn: mutationWeb3Enable,
   })
 
-  const { data: selectResult, mutate: selectAccount } = useMutation({
+  /* Select Account Mutation */
+  const {
+    data: selectResult,
+    mutate: selectAccount,
+    reset: resetSelectAccount,
+  } = useMutation({
     mutationFn: async (account: string) => {
       const selectedAccount = connectResult?.accounts.find(
         (acc) => acc.address === account,
@@ -71,11 +83,19 @@ export function Web3Provider({ children, ...props }: Web3ProviderProps) {
     },
   })
 
+  /* Disconnect */
+  const disconnect = useCallback(() => {
+    resetConnect()
+    resetSelectAccount()
+  }, [resetConnect, resetSelectAccount])
+
+  /* Provider State */
   const value: Web3ProviderState = {
     accounts: connectResult?.accounts ?? [],
     api: api ?? null,
     connect,
     currentAccount: selectResult?.currentAccount ?? null,
+    disconnect,
     extensions: connectResult?.extensions ?? [],
     injector: selectResult?.injector ?? null,
     isConnected: isSuccess,
