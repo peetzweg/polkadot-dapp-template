@@ -51,6 +51,9 @@ export const TransferValue: React.FC = () => {
         <h3 className="text-3xl font-extrabold leading-6 tracking-tight">
           Transfer
         </h3>
+        <p className="text-sm text-muted-foreground">
+          Send an amount of your native tokens to the destination account.
+        </p>
       </div>
 
       <Form {...form}>
@@ -69,6 +72,8 @@ export const TransferValue: React.FC = () => {
                 <div className="flex flex-row items-center gap-1">
                   <FormControl>
                     <Input
+                      autoCapitalize="off"
+                      autoComplete="off"
                       className="text-right font-mono tabular-nums"
                       placeholder="69.420"
                       {...field}
@@ -99,6 +104,8 @@ export const TransferValue: React.FC = () => {
               <FormItem>
                 <FormControl>
                   <Input
+                    autoCapitalize="off"
+                    autoComplete="off"
                     placeholder="Destination"
                     className="font-mono"
                     {...field}
@@ -110,22 +117,22 @@ export const TransferValue: React.FC = () => {
             )}
           />
 
-          <div className=" -mx-6 -mb-6 mt-4 rounded-b-md border-t border-dashed  p-6 ">
+          <div className="-mx-6 -mb-6 mt-4 rounded-b-sm border-t border-dashed bg-muted p-6">
             <div className="relative px-2 text-right font-mono text-sm uppercase italic">
               {currentAccount?.meta.name ?? currentAccount?.address}
             </div>
-            <div className="relative flex w-full justify-start border-t text-xs uppercase text-muted-foreground">
+            <div className="relative flex w-full justify-start border-t border-muted-foreground text-xs uppercase text-muted-foreground">
               Sign with
             </div>
             <Button
               disabled={form.formState.isLoading || !form.formState.isValid}
-              className="float-right transition-all"
+              className="float-right"
               type="submit"
             >
               Submit
               <Pencil1Icon
                 className={cn([
-                  "ml-2 transition-all",
+                  "ml-2 transition-transform",
                   { "m-0 w-0": !form.formState.isValid },
                 ])}
               />
