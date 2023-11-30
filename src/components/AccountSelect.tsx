@@ -9,9 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { LinkBreak2Icon } from "@radix-ui/react-icons"
+import { Button } from "./ui/button"
 
 export const AccountSelect: React.FC = () => {
-  const { accounts, selectAccount } = useWeb3()
+  const { accounts, selectAccount, disconnect } = useWeb3()
 
   return (
     <Select onValueChange={selectAccount}>
@@ -27,6 +29,20 @@ export const AccountSelect: React.FC = () => {
             </SelectItem>
           ))}
         </SelectGroup>
+
+        <hr className="my-1" />
+
+        <div>
+          <Button
+            size={"icon"}
+            onClick={disconnect}
+            className="w-full gap-2"
+            variant={"ghost"}
+          >
+            <LinkBreak2Icon />
+            Disconnect
+          </Button>
+        </div>
       </SelectContent>
     </Select>
   )
