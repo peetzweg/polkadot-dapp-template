@@ -156,9 +156,11 @@ export const ProposeTip: React.FC = () => {
 
             <div className="flex flex-col items-end justify-end">
               <div className="relative pl-2 text-right font-mono text-sm italic">
-                {formatBalance(
-                  api.consts.referenda.submissionDeposit.toBigInt(),
-                )}
+                {api?.consts
+                  ? formatBalance(
+                      api.consts.referenda.submissionDeposit.toBigInt(),
+                    )
+                  : null}
               </div>
               <div className="relative flex w-1/2 justify-end border-t border-muted-foreground text-xs uppercase text-muted-foreground">
                 Required Deposit
