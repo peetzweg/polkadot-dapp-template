@@ -2,6 +2,7 @@ import { AccountProfile } from "./components/AccountProfile"
 import { AccountSelect } from "./components/AccountSelect"
 import { Connect } from "./components/Connect"
 import { ConnectionIndicator } from "./components/ConnectionIndicator"
+import { ProposeTip } from "./components/ProposeTip"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { TransferValue } from "./components/TransferValue"
 import { cn } from "./lib/utils"
@@ -48,10 +49,10 @@ function App() {
           <main className="relative col-auto mx-auto grid w-full py-6">
             <div className="grid items-start justify-center gap-6 p-8  lg:grid-cols-2 xl:grid-cols-2">
               <DemoContainer>
-                <AccountProfile />
+                <ProposeTip />
               </DemoContainer>
               <DemoContainer>
-                <TransferValue />
+                <AccountProfile />
               </DemoContainer>
             </div>
           </main>
