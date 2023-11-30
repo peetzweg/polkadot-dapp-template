@@ -4,7 +4,7 @@ import {
   web3FromSource,
 } from "@polkadot/extension-dapp"
 import { UseMutateFunction, useMutation } from "@tanstack/react-query"
-import { createContext, useCallback, useContext, useEffect } from "react"
+import { createContext, useCallback, useContext } from "react"
 import { mutationWeb3Enable } from "../api/mutationWeb3Enable"
 
 type InjectedAccountWithMeta = Awaited<ReturnType<typeof web3Accounts>>[0]
@@ -16,7 +16,7 @@ interface Web3ProviderProps {
 
 interface Web3ProviderState {
   accounts: InjectedAccountWithMeta[]
-  connect: UseMutateFunction
+  connect: UseMutateFunction<Awaited<ReturnType<typeof mutationWeb3Enable>>>
   currentAccount: InjectedAccountWithMeta | null
   disconnect: () => void
   extensions: InjectedExtensions[]
@@ -56,6 +56,7 @@ export function Web3Provider({ children, ...props }: Web3ProviderProps) {
     reset: resetSelectAccount,
   } = useMutation({
     mutationFn: async (account: string) => {
+      console.log("selecting", account)
       const selectedAccount = connectResult?.accounts.find(
         (acc) => acc.address === account,
       )
@@ -85,10 +86,6 @@ export function Web3Provider({ children, ...props }: Web3ProviderProps) {
     isConnected: isSuccess,
     selectAccount,
   }
-
-  useEffect(() => {
-    connect()
-  }, [connect])
 
   return (
     <Web3ProviderContext.Provider {...props} value={value}>
