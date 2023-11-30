@@ -13,10 +13,10 @@ import { LinkBreak2Icon } from "@radix-ui/react-icons"
 import { Button } from "./ui/button"
 
 export const AccountSelect: React.FC = () => {
-  const { accounts, selectAccount, disconnect } = useWeb3()
+  const { accounts, selectAccount, disconnect, currentAccount } = useWeb3()
 
   return (
-    <Select onValueChange={selectAccount}>
+    <Select onValueChange={selectAccount} value={currentAccount?.address}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select an Account" />
       </SelectTrigger>
