@@ -8,12 +8,7 @@
     "dev": "vite",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prettier": "prettier . --write",
-    "preview": "vite preview",
-    "shadcn-ui": "pnpm dlx shadcn-ui@latest",
-    "typegen": "pnpm typegen:defs && pnpm typegen:meta",
-    "typegen:defs": "polkadot-types-from-defs --package sample-polkadotjs-typegen/interfaces --input ./src/interfaces --endpoint ./metadata.json",
-    "typegen:meta": "polkadot-types-from-chain --package sample-polkadotjs-typegen/interfaces --endpoint ./metadata.json --output ./src/interfaces",
-    "metadata": "curl -H \"Content-Type: application/json\" -d '{\"id\":\"1\", \"jsonrpc\":\"2.0\", \"method\": \"state_getMetadata\", \"params\":[]}' http://localhost:9944 > metadata.json"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

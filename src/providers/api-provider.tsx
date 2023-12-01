@@ -37,10 +37,6 @@ export function APIProvider({ children, ...props }: APIProviderProps) {
       setApi({ api: _api, isError: false, rpcURL })
     })
 
-    _api.on("ready", () => {
-      console.log("api ready")
-    })
-
     _api.on("error", (e: Event) => {
       console.error(e)
       // todo turn event into error

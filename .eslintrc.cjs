@@ -29,6 +29,7 @@ module.exports = {
     "@tanstack/query/no-rest-destructuring": "warn",
     "@tanstack/query/stable-query-client": "error",
     "react/prop-types": "off",
+    "no-console": ["error", { allow: ["warn", "error"] }],
   },
   parserOptions: {
     ecmaVersion: "latest",
