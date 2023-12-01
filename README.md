@@ -11,7 +11,7 @@
 - ~~RPC from url~~
 - check if pallet is available
 - describe decisions in README
-_ license
+
 
 ## Goals
 
@@ -25,7 +25,7 @@ _ license
 - best typescript experience possible
 - light client first
 - use state for art tools for DApps in the Polkadot Ecosystem
-
+- reasonable bundle size
 
 ## Stack
 
@@ -41,3 +41,18 @@ _ license
 
 - `<Web3Provider />`
 - `<ApiProvider />`
+
+## Typegen
+
+(**Note: Work in Progress**)
+
+```json
+{
+  "scripts": {
+    "typegen": "pnpm typegen:defs && pnpm typegen:meta",
+    "typegen:defs": "polkadot-types-from-defs --package sample-polkadotjs-typegen/interfaces --input ./src/interfaces --endpoint ./metadata.json",
+    "typegen:meta": "polkadot-types-from-chain --package sample-polkadotjs-typegen/interfaces --endpoint ./metadata.json --output ./src/interfaces",
+    "metadata": "curl -H \"Content-Type: application/json\" -d '{\"id\":\"1\", \"jsonrpc\":\"2.0\", \"method\": \"state_getMetadata\", \"params\":[]}' http://localhost:9944 > metadata.json"
+  }
+}
+```
