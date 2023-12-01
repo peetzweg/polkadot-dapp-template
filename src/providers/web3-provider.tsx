@@ -56,7 +56,6 @@ export function Web3Provider({ children, ...props }: Web3ProviderProps) {
     reset: resetSelectAccount,
   } = useMutation({
     mutationFn: async (account: string) => {
-      console.log("selecting", account)
       const selectedAccount = connectResult?.accounts.find(
         (acc) => acc.address === account,
       )
