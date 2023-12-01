@@ -9,15 +9,15 @@ import { RequireApi } from "./components/helpers/RequireApi"
 import { useWeb3 } from "./providers/web3-provider"
 
 function App() {
-  const { isConnected } = useWeb3()
+  const { isConnected, currentAccount } = useWeb3()
 
   return (
     <div className="relative flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-14 items-center justify-between px-3">
-          <div></div>
+      <header className="sticky top-0 z-50 w-full border-b  bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-14 items-center justify-between gap-3 px-3">
+          <div />
           <div className="flex">
-            {!isConnected ? <Connect /> : <AccountSelect />}
+            {isConnected && currentAccount && <AccountSelect />}
           </div>
           <div className="flex flex-row items-center gap-4">
             <ThemeToggle />
