@@ -61,7 +61,7 @@ export const ProposeTip: React.FC = () => {
   )
 
   return (
-    <div className="relative flex flex-col gap-4 rounded-md border p-6 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+    <div className="relative flex w-auto flex-col space-y-2 rounded-md border p-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-6 lg:p-6">
       <div className="space-y-2">
         <h3 className="text-3xl font-extrabold leading-6 tracking-tight">
           Propose OpenGov Tip
@@ -73,6 +73,8 @@ export const ProposeTip: React.FC = () => {
 
       <Form {...form}>
         <form
+          // TODO type error of react-hook-forms?
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
