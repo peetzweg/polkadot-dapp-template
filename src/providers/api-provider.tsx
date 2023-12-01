@@ -8,38 +8,33 @@ interface APIProviderProps {
 
 interface APIProviderState {
   api: ApiPromise
+  rpcURL: string
   error?: Error
   isError: boolean
 }
 
 const initialState: APIProviderState = {
   api: {} as ApiPromise,
+  rpcURL: "",
   isError: false,
 }
 
 const APIProviderContext = createContext<APIProviderState | null>(null)
 
-const ENDPOINT = "wss://rpc.polkadot.io"
-// const ENDPOINT = "ws://127.0.0.1:9944"
-
 export function APIProvider({ children, ...props }: APIProviderProps) {
   const [api, setApi] = useState<APIProviderState>(initialState)
 
-  const wsProvider = useMemo(() => {
+  const [wsProvider, rpcURL] = useMemo(() => {
     const urlRPC = new URLSearchParams(window.location.search).get("rpc")
-
-    if (urlRPC) {
-      return new WsProvider(urlRPC)
-    } else {
-      return new WsProvider(ENDPOINT)
-    }
+    const rpcURL = urlRPC ?? import.meta.env.VITE_DEFAULT_RPC
+    return [new WsProvider(rpcURL), rpcURL]
   }, [])
 
   useEffect(() => {
     const _api = new ApiPromise({ provider: wsProvider })
     _api.on("connected", async () => {
       await _api.isReady
-      setApi({ api: _api, isError: false })
+      setApi({ api: _api, isError: false, rpcURL })
     })
 
     _api.on("ready", () => {
@@ -54,12 +49,13 @@ export function APIProvider({ children, ...props }: APIProviderProps) {
         isError: true,
         error: Error("API Error: connection lost"),
         api: {} as ApiPromise,
+        rpcURL,
       })
     })
     _api.on("disconnected", () => {
       // TODO handle disconnect
     })
-  }, [wsProvider])
+  }, [rpcURL, wsProvider])
 
   return (
     <APIProviderContext.Provider {...props} value={api}>

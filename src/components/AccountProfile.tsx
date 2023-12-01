@@ -1,4 +1,3 @@
-import { BellIcon, EyeNoneIcon, PersonIcon } from "@radix-ui/react-icons"
 import { useQuery } from "@tanstack/react-query"
 import { formatBalance } from "../lib/formatBalance"
 import { useApi } from "../providers/api-provider"
@@ -8,7 +7,7 @@ export const AccountProfile: React.FC = () => {
   const { api } = useApi()
   const { currentAccount } = useWeb3()
 
-  const { data, isLoading, error, isError } = useQuery({
+  const { data } = useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ["system.account", currentAccount?.address],
     queryFn: async () => {
@@ -18,51 +17,40 @@ export const AccountProfile: React.FC = () => {
   })
 
   return (
-    <div className="relative flex w-auto flex-col space-y-2 rounded-md border p-6 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : data ? (
+    <div className="relative flex w-auto flex-col space-y-2 rounded-md border p-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-6 lg:p-6">
+      {data && (
         <>
           <div className="space-y-2">
             <h2 className="text-4xl font-extrabold leading-6 tracking-tight">
               {currentAccount?.meta.name}
             </h2>
-            <p className="mt-1 font-mono text-sm text-gray-500">
+            <p className="mt-1 break-all font-mono text-sm text-gray-500">
               {currentAccount?.address}
             </p>
           </div>
 
-          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-            <BellIcon className="mt-px h-5 w-5" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium leading-none">
+          <div className="flex flex-row justify-around">
+            <div className="flex flex-1 flex-col items-end justify-center space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+              <div className="text-2xl font-bold tabular-nums">
                 {formatBalance(data.free.toBigInt())}
-              </p>
-              <p className="text-sm text-muted-foreground">Free Balance</p>
+              </div>
+              <p className="text-xs text-muted-foreground">Free</p>
             </div>
-          </div>
-
-          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-            <PersonIcon className="mt-px h-5 w-5" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium leading-none">
+            <div className=" flex flex-1 flex-col items-end justify-center space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+              <div className="text-2xl font-bold tabular-nums">
                 {formatBalance(data.reserved.toBigInt())}
-              </p>
-              <p className="text-sm text-muted-foreground">Reserved Balance</p>
+              </div>
+              <p className="text-xs text-muted-foreground">Reserved</p>
             </div>
-          </div>
-
-          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-            <EyeNoneIcon className="mt-px h-5 w-5" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium leading-none">
+            <div className=" flex flex-1 flex-col items-end justify-center space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+              <div className="text-2xl font-bold tabular-nums">
                 {formatBalance(data.frozen.toBigInt())}
-              </p>
-              <p className="text-sm text-muted-foreground">Frozen Balance</p>
+              </div>
+              <p className="text-xs text-muted-foreground">Frozen</p>
             </div>
           </div>
         </>
-      ) : null}
+      )}
     </div>
   )
 }
