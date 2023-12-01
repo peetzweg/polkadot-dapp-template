@@ -1,4 +1,3 @@
-import { BellIcon, EyeNoneIcon, PersonIcon } from "@radix-ui/react-icons"
 import { useQuery } from "@tanstack/react-query"
 import { formatBalance } from "../lib/formatBalance"
 import { useApi } from "../providers/api-provider"

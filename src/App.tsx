@@ -1,4 +1,3 @@
-import { ArrowUpIcon } from "@radix-ui/react-icons"
 import { AccountProfile } from "./components/AccountProfile"
 import { AccountSelect } from "./components/AccountSelect"
 import { Connect } from "./components/Connect"
@@ -7,7 +6,6 @@ import { ThemeToggle } from "./components/ThemeToggle"
 import { TransferValue } from "./components/TransferValue"
 import { RequireAccount } from "./components/helpers/RequireAccount"
 import { RequireApi } from "./components/helpers/RequireApi"
-import { Skeleton } from "./components/ui/skeleton"
 import { useWeb3 } from "./providers/web3-provider"
 
 function App() {
