@@ -1,7 +1,11 @@
 module.exports = {
   root: true,
   env: { browser: true, es2020: true },
-
+  settings: {
+    react: {
+      version: "detect",
+    },
+  },
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended-type-checked",
@@ -24,6 +28,7 @@ module.exports = {
     "@tanstack/query/exhaustive-deps": "error",
     "@tanstack/query/no-rest-destructuring": "warn",
     "@tanstack/query/stable-query-client": "error",
+    "react/prop-types": "off",
   },
   parserOptions: {
     ecmaVersion: "latest",
