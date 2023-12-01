@@ -3,25 +3,6 @@ import { useApi } from "../providers/api-provider"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card"
 import { useQuery } from "@tanstack/react-query"
 
-const IndicatorBubble = ({ isError }: { isError: boolean }) => {
-  return (
-    <span className="relative flex h-3 w-3">
-      <span
-        className={cx([
-          "absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75",
-          { "animate-ping bg-red-400": isError },
-        ])}
-      ></span>
-      <span
-        className={cx([
-          "relative inline-flex h-3 w-3 rounded-full bg-sky-500",
-          { "bg-red-500": isError },
-        ])}
-      ></span>
-    </span>
-  )
-}
-
 export const ConnectionIndicator: React.FC = () => {
   const { api, isError, error, rpcURL } = useApi()
 
@@ -38,10 +19,39 @@ export const ConnectionIndicator: React.FC = () => {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
-        <IndicatorBubble isError={isError} />
+        <span className="relative flex h-3 w-3 hover:cursor-pointer">
+          <span
+            className={cx([
+              "absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75",
+              { "animate-ping bg-red-400": isError },
+            ])}
+          />
+          <span
+            className={cx([
+              "relative inline-flex h-3 w-3 rounded-full bg-sky-500",
+              { "bg-red-500": isError },
+            ])}
+          />
+        </span>
       </HoverCardTrigger>
-      <HoverCardContent>
-        <div className="flex flex-row items-start">
+      <HoverCardContent className="w-auto">
+        <div className="flex flex-row items-start gap-3">
+          <div className="py-2">
+            <span className="relative flex h-3 w-3">
+              <span
+                className={cx([
+                  "absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75",
+                  { "animate-ping bg-red-400": isError },
+                ])}
+              />
+              <span
+                className={cx([
+                  "relative inline-flex h-3 w-3 rounded-full bg-sky-500",
+                  { "bg-red-500": isError },
+                ])}
+              />
+            </span>
+          </div>
           <div className="flex flex-col gap-2">
             {isError ? (
               <div className="space-y-1">

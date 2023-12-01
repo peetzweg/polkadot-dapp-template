@@ -46,7 +46,7 @@ export const TransferValue: React.FC = () => {
         <h3 className="text-3xl font-extrabold leading-6 tracking-tight">
           Transfer
         </h3>
-        <p className="text-sm text-muted-foreground">
+        <p className="mt-1 break-words font-mono text-sm text-gray-500">
           Send an amount of your native tokens to the destination account.
         </p>
       </div>
@@ -72,7 +72,7 @@ export const TransferValue: React.FC = () => {
                       autoCapitalize="off"
                       autoComplete="off"
                       className="text-right font-mono tabular-nums"
-                      placeholder="69.420"
+                      placeholder="10.00"
                       {...field}
                     />
                   </FormControl>
