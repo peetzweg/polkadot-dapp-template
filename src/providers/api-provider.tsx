@@ -8,15 +8,19 @@ interface APIProviderProps {
 
 interface APIProviderState {
   api: ApiPromise
-  rpcURL: string
+  decimals: number
   error?: Error
   isError: boolean
+  rpcURL: string
+  symbol?: string
 }
 
 const initialState: APIProviderState = {
   api: {} as ApiPromise,
-  rpcURL: "",
+  decimals: 0,
   isError: false,
+  rpcURL: "",
+  symbol: undefined,
 }
 
 const APIProviderContext = createContext<APIProviderState | null>(null)
@@ -34,11 +38,21 @@ export function APIProvider({ children, ...props }: APIProviderProps) {
     const _api = new ApiPromise({ provider: wsProvider })
     _api.on("connected", async () => {
       await _api.isReady
-      setApi({ api: _api, isError: false, rpcURL })
+
+      const [decimals] = _api.registry.chainDecimals
+      const [symbol] = _api.registry.chainTokens
+
+      setApi({
+        api: _api,
+        isError: false,
+        rpcURL,
+        decimals: decimals,
+        symbol: symbol?.toString(),
+      })
     })
 
     _api.on("error", (e: Event) => {
-      console.error(e)
+      console.error("API Error", e)
       // todo turn event into error
 
       setApi({
@@ -46,9 +60,20 @@ export function APIProvider({ children, ...props }: APIProviderProps) {
         error: Error("API Error: connection lost"),
         api: {} as ApiPromise,
         rpcURL,
+        decimals: 0,
+        symbol: undefined,
       })
     })
     _api.on("disconnected", () => {
+      console.error("API Disconnected")
+      setApi({
+        isError: true,
+        error: Error("API Error: connection lost"),
+        api: {} as ApiPromise,
+        rpcURL,
+        decimals: 0,
+        symbol: undefined,
+      })
       // TODO handle disconnect
     })
   }, [rpcURL, wsProvider])

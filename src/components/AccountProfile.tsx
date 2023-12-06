@@ -4,7 +4,7 @@ import { useApi } from "../providers/api-provider"
 import { useWeb3 } from "../providers/web3-provider"
 
 export const AccountProfile: React.FC = () => {
-  const { api } = useApi()
+  const { api, decimals } = useApi()
   const { currentAccount } = useWeb3()
 
   const { data } = useQuery({
@@ -32,19 +32,19 @@ export const AccountProfile: React.FC = () => {
           <div className="flex flex-row justify-around">
             <div className="flex flex-1 flex-col items-end justify-center space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
               <div className="text-2xl font-bold tabular-nums">
-                {formatBalance(data.free.toBigInt())}
+                {formatBalance(data.free.toBigInt(), { decimals })}
               </div>
               <p className="text-xs text-muted-foreground">Free</p>
             </div>
             <div className=" flex flex-1 flex-col items-end justify-center space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
               <div className="text-2xl font-bold tabular-nums">
-                {formatBalance(data.reserved.toBigInt())}
+                {formatBalance(data.reserved.toBigInt(), { decimals })}
               </div>
               <p className="text-xs text-muted-foreground">Reserved</p>
             </div>
             <div className=" flex flex-1 flex-col items-end justify-center space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
               <div className="text-2xl font-bold tabular-nums">
-                {formatBalance(data.frozen.toBigInt())}
+                {formatBalance(data.frozen.toBigInt(), { decimals })}
               </div>
               <p className="text-xs text-muted-foreground">Frozen</p>
             </div>

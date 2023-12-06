@@ -8,7 +8,7 @@ interface FormattingOptions {
 }
 
 const DEFAULT_OPTIONS: FormattingOptions = {
-  decimals: 12,
+  decimals: 0,
   fractionDigits: 2,
   symbol: undefined,
 }
@@ -22,8 +22,6 @@ export const formatBalance = (
   if (options.decimals < 0) throw new Error("Decimals must be positive")
   if (options.fractionDigits < 0)
     throw new Error("Fraction digits must be positive")
-  if (options.decimals < options.fractionDigits)
-    throw new Error("Decimals must be greater than fraction digits")
 
   const balanceString = balance.toString()
   const integerDigits = balanceString.split("")
@@ -36,11 +34,13 @@ export const formatBalance = (
     Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(
       BigInt(integerPart),
     ) +
-    "." +
-    fractionalPart
-      .toString()
-      .slice(0, options.fractionDigits)
-      .padEnd(options.fractionDigits, "0") +
+    (options.decimals > 0
+      ? "." +
+        fractionalPart
+          .toString()
+          .slice(0, options.fractionDigits)
+          .padEnd(options.fractionDigits, "0")
+      : "") +
     (options.symbol ? ` ${options.symbol}` : "")
   )
 }

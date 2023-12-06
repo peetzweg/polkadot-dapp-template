@@ -20,7 +20,7 @@ const formSchema = z.object({
 
 export const TransferValue: React.FC = () => {
   const { currentAccount, injector } = useWeb3()
-  const { api } = useApi()
+  const { api, decimals, symbol } = useApi()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
@@ -33,11 +33,14 @@ export const TransferValue: React.FC = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     ({ receiver, value }) => {
+      // TODO! unsave scaling, can overflow and not work with to many decimals
+      const scaledValue = Number(value) * 10 ** decimals
+
       return api.tx.balances
-        .transferAllowDeath(receiver, value)
+        .transferAllowDeath(receiver, scaledValue)
         .signAndSend(currentAccount!.address, { signer: injector!.signer })
     },
-    [api, currentAccount, injector],
+    [api.tx.balances, currentAccount, decimals, injector],
   )
 
   return (
@@ -80,7 +83,7 @@ export const TransferValue: React.FC = () => {
                     variant="secondary"
                     className="pointer-events-none px-3 shadow-none"
                   >
-                    DOT
+                    {symbol}
                   </Button>
                 </div>
               </FormItem>
