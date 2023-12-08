@@ -1,29 +1,26 @@
 import { ApiPromise, WsProvider } from "@polkadot/api"
 import "@polkadot/api-augment"
-import { cryptoWaitReady } from "@polkadot/util-crypto"
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
+
 interface APIProviderProps {
   children: React.ReactNode
+  config: {
+    key: string
+    rpcURL: string
+  }[]
 }
 
-interface APIProviderState {
+interface APIState {
   api: ApiPromise
   decimals: number
-  state: "connected" | "disconnected" | "error"
   error?: Error
   isError: boolean
   rpcURL: string
   symbol?: string
 }
+type MultiAPIProviderState = Record<string, APIState>
 
-const initialState: APIProviderState = {
-  api: {} as ApiPromise,
-  state: "disconnected",
-  decimals: 0,
-  isError: false,
-  rpcURL: "",
-  symbol: undefined,
-}
+const initialState: MultiAPIProviderState = {}
 
 const APIProviderContext = createContext<APIProviderState | null>(null)
 
@@ -37,19 +34,9 @@ export function APIProvider({ children, ...props }: APIProviderProps) {
   }, [])
 
   useEffect(() => {
-    const _api = new ApiPromise({
-      provider: wsProvider,
-      types: {
-        Entropy: "[u8;32]",
-        EntropyVec: "Vec<Entropy>",
-        Member: "[u8;33]",
-        MembersVec: "Vec<Member>",
-      },
-    })
+    const _api = new ApiPromise({ provider: wsProvider })
     _api.on("connected", async () => {
       await _api.isReady
-      // (when using the API and waiting on `isReady` this is done automatically)
-      await cryptoWaitReady()
 
       const [decimals] = _api.registry.chainDecimals
       const [symbol] = _api.registry.chainTokens
@@ -57,7 +44,6 @@ export function APIProvider({ children, ...props }: APIProviderProps) {
       setApi({
         api: _api,
         isError: false,
-        state: "connected",
         rpcURL,
         decimals: decimals,
         symbol: symbol?.toString(),
@@ -69,26 +55,25 @@ export function APIProvider({ children, ...props }: APIProviderProps) {
       // todo turn event into error
 
       setApi({
-        api: {} as ApiPromise,
-        decimals: 0,
-        error: Error("API Error: connection lost"),
         isError: true,
+        error: Error("API Error: connection lost"),
+        api: {} as ApiPromise,
         rpcURL,
-        state: "error",
+        decimals: 0,
         symbol: undefined,
       })
     })
     _api.on("disconnected", () => {
       console.error("API Disconnected")
       setApi({
-        api: {} as ApiPromise,
-        decimals: 0,
-        error: Error("API Error: connection lost"),
         isError: true,
+        error: Error("API Error: connection lost"),
+        api: {} as ApiPromise,
         rpcURL,
-        state: "disconnected",
+        decimals: 0,
         symbol: undefined,
       })
+      // TODO handle disconnect
     })
   }, [rpcURL, wsProvider])
 
