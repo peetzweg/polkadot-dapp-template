@@ -1,5 +1,3 @@
-import { useApi } from "../../providers/api-provider"
-import { useWeb3 } from "../../providers/web3-provider"
 import { Button } from "../ui/button"
 import { Form } from "../ui/form"
 
@@ -10,7 +8,6 @@ import { Pencil1Icon } from "@radix-ui/react-icons"
 import { useCallback, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { cn } from "../../lib/utils"
-import { Skeleton } from "../ui/skeleton"
 
 const formSchema = z.object({})
 
@@ -19,8 +16,6 @@ interface ApplyProps {
 }
 
 export const Commit: React.FC<ApplyProps> = ({ onSuccess }) => {
-  const { currentAccount, injector } = useWeb3()
-  const { api } = useApi()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })

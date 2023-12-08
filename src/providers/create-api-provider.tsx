@@ -30,7 +30,7 @@ interface ApiConfig {
   rpcs: string[]
 }
 
-export const createAPIProvider = ({ name, rpcs }: ApiConfig) => {
+export const createAPIProvider = ({ rpcs }: ApiConfig) => {
   const APIProviderContext = createContext<APIProviderState | null>(null)
 
   function APIProvider({ children, ...props }: APIProviderProps) {

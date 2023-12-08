@@ -1,6 +1,5 @@
 import { Keyring } from "@polkadot/keyring"
 import { KeyringPair } from "@polkadot/keyring/types"
-import { mnemonicGenerate } from "@polkadot/util-crypto"
 import { createContext, useContext, useEffect, useState } from "react"
 import { useApi } from "./api-provider"
 interface KeyringProviderProps {
@@ -16,7 +15,7 @@ const initialState: KeyringProviderState = {}
 const KeyringProviderContext = createContext<KeyringProviderState>(initialState)
 
 export function KeyringProvider({ children, ...props }: KeyringProviderProps) {
-  const { api, state } = useApi()
+  const { state } = useApi()
   const [pair, setPair] = useState<KeyringPair | undefined>()
 
   useEffect(() => {
@@ -24,7 +23,6 @@ export function KeyringProvider({ children, ...props }: KeyringProviderProps) {
 
     const keyring = new Keyring({ type: "sr25519", ss58Format: 0 })
 
-    const mnemonic = mnemonicGenerate()
     const pair = keyring.addFromUri(
       "//Alice",
       { name: "apply-pair" },

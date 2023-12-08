@@ -1,4 +1,3 @@
-import { useApi } from "../../providers/api-provider"
 import { useWeb3 } from "../../providers/web3-provider"
 import { Button } from "./../ui/button"
 import { Form } from "./../ui/form"
@@ -18,8 +17,8 @@ interface ApplyProps {
 }
 
 export const Apply: React.FC<ApplyProps> = ({ onSuccess }) => {
-  const { currentAccount, injector } = useWeb3()
-  const { api } = useApi()
+  const { currentAccount } = useWeb3()
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })

@@ -1,4 +1,3 @@
-import { useApi } from "../../providers/api-provider"
 import { Button } from "../ui/button"
 import { Form } from "../ui/form"
 
@@ -7,7 +6,7 @@ import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { UploadIcon } from "@radix-ui/react-icons"
 import { useCallback } from "react"
-import { useForm } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
 import { cn } from "../../lib/utils"
 
 const formSchema = z.object({})
@@ -17,12 +16,11 @@ interface ApplyProps {
 }
 
 export const SubmitEvidence: React.FC<ApplyProps> = ({ onSuccess }) => {
-  const { api } = useApi()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
 
-  const onSubmit: SubmitHandier<z.infer<typeof formSchema>> =
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> =
     useCallback(async () => {
       // TODO upload to bulletin chain
       // TODO set hash via => ProofOfInk::submit_evidence(signed(1), [1; 32])
