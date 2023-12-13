@@ -20,8 +20,8 @@ function App() {
         <main className="relative col-auto mx-auto grid w-full py-6 sm:py-2">
           <RequireApi fallback={null}>
             <div className="grid items-start justify-center gap-6 md:p-6 lg:grid-cols-1 xl:grid-cols-1">
-              <ProofOfInk />
               <Debug />
+              {/* <ProofOfInk /> */}
               {/* <AddDesignFamily /> */}
             </div>
           </RequireApi>

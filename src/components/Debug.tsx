@@ -1,32 +1,34 @@
 import { mnemonicGenerate, mnemonicToEntropy } from "@polkadot/util-crypto"
 import { useQuery } from "@tanstack/react-query"
+import * as Comlink from "comlink"
 import { useEffect, useMemo } from "react"
 import { formatBalance } from "../lib/formatBalance"
 import { useApi } from "../providers/api-provider"
 import { useKeyring } from "../providers/keyring-provider"
-import init, { member_from_entropy } from "../wasm/pkg/verifiable.js"
-import myWorkerUrl from "./worker?worker&url"
+import { VerifiableWorker } from "./verifiable-worker.js"
+import verifiableWorkerUrl from "./verifiable-worker?worker&url"
 
 export const Debug: React.FC = () => {
   const { api, decimals } = useApi()
   const { pair } = useKeyring()
-  const worker: Worker = useMemo(() => {
-    const innerWorker = new Worker(myWorkerUrl, { type: "module" })
-    innerWorker.addEventListener("message", (ev) => {
-      console.log({ message: ev.data })
-    })
-    return innerWorker
+
+  // TODO how to use generated pair as entropy
+  // TODO why are the verifiable calls happening more than once
+  // TODO use comlinks advanced feature to transfer or just proxy certain values
+
+  const verifiable: Comlink.Remote<VerifiableWorker> = useMemo(() => {
+    const rawWorker = new Worker(verifiableWorkerUrl, { type: "module" })
+    return Comlink.wrap(rawWorker)
   }, [])
 
   useEffect(() => {
-    if (!worker) return
-    init()
-      .then(() => {
-        //
-        // const mnemonic = mnemonicGenerate(24)
-        // const entropy = mnemonicToEntropy(mnemonic)
-        // const member = member_from_entropy(entropy)
+    if (!verifiable) return
+    if (!api) return
+    console.log("init verifiable")
 
+    verifiable
+      .init()
+      .then(() => {
         const myEntropy = api.createType(
           "Entropy",
           mnemonicToEntropy(mnemonicGenerate(24)),
@@ -38,53 +40,46 @@ export const Debug: React.FC = () => {
           .map((mnemonic) => mnemonicToEntropy(mnemonic))
           .map((entropy) => api.createType("Entropy", entropy))
 
-        // // We get this from chain
-        const raw_members = entropies.map((entropy) =>
-          member_from_entropy(entropy.toU8a()),
-        )
-        console.log({ entropies, myEntropy, raw_members })
+        Promise.all(
+          entropies.map((entropy) =>
+            verifiable.memberFromEntropy(entropy.toU8a()),
+          ),
+        ).then((raw_members) => {
+          console.log({ entropies, myEntropy, raw_members })
 
-        const membersVec = api.createType("MembersVec", raw_members)
+          const membersVec = api.createType("MembersVec", raw_members)
 
-        console.log({ membersVec, myEntropy })
-        worker.postMessage([myEntropy.toU8a(), membersVec.toU8a()])
+          verifiable
+            .generateProof(myEntropy.toU8a(), membersVec.toU8a())
+            .then((proof) => {
+              console.log({ verifiable: proof })
 
-        // one_shot_promise(myEntropy.toU8a(), membersVec.toU8a())
-        //   .then((result) => {
-        //     console.log(result)
-        //   })
-        //   .catch((error) => console.error(error))
-
-        // let result = one_shot(myEntropy.toU8a(), membersVec.toU8a())
-
-        // // via API (recommended)
-        // api.createType("EntropyVec", members)
-
-        // console.log(members)
-
-        // const members_input = Uint8Array.from(new Array(320).fill(1))
-        // const entropy = Uint8Array.from(new Array(32).fill(42))
-        // console.log({ members_input, entropy })
-
-        // console.log("wasm initialized")
-
-        // const secret = new_secret(entropy)
-
-        // console.log({ secret })
-        // const member = member_from_secret(secret)
-
-        // console.log({ member })
-
-        // const commitment = open(member, members_input)
-        // console.log({ commitment })
-
-        // const outcome = one_shot(entropy, members_input)
-        // console.log({ outcome })
+              verifiable
+                .validate(
+                  proof.proof,
+                  proof.members,
+                  proof.context!,
+                  proof.message!,
+                )
+                .then((validateResults) => {
+                  console.log({ validateResults })
+                  if (validateResults.alias == proof.alias) {
+                    console.log("proof is valid")
+                  }
+                })
+                .catch((validationError) => {
+                  console.log({ validationError })
+                })
+            })
+            .catch((error) => {
+              console.error(error)
+            })
+        })
       })
       .catch((error) => {
-        console.log({ error })
+        console.log("Error during init", error)
       })
-  }, [worker])
+  }, [api, verifiable])
 
   const { data } = useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
