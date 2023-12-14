@@ -40,7 +40,7 @@ export const useKeyringStore = create<WholeState>((set, get): KeyringState => {
       })
     },
     create: (name: string, derivation = "Alice") => {
-      const freshMnemonic = mnemonicGenerate()
+      const freshMnemonic = mnemonicGenerate(24)
 
       set({
         mnemonic: freshMnemonic,

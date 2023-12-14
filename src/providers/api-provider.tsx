@@ -44,6 +44,8 @@ export function APIProvider({ children, ...props }: APIProviderProps) {
         EntropyVec: "Vec<Entropy>",
         Member: "[u8;33]",
         MembersVec: "Vec<Member>",
+        Proof: "[u8;788]",
+        Alias: "[u8;32]",
       },
     })
     _api.on("connected", async () => {
