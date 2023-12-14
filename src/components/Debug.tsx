@@ -4,13 +4,14 @@ import * as Comlink from "comlink"
 import { useEffect, useMemo } from "react"
 import { formatBalance } from "../lib/formatBalance"
 import { useApi } from "../providers/api-provider"
-import { useKeyring } from "../providers/keyring-provider"
+import { useKeyringStore } from "../state/keyring"
+import { Button } from "./ui/button.js"
 import { VerifiableWorker } from "./verifiable-worker.js"
 import verifiableWorkerUrl from "./verifiable-worker?worker&url"
 
 export const Debug: React.FC = () => {
   const { api, decimals } = useApi()
-  const { pair } = useKeyring()
+  const { pair, create, mnemonic } = useKeyringStore()
 
   // TODO how to use generated pair as entropy
   // TODO why are the verifiable calls happening more than once
@@ -25,6 +26,8 @@ export const Debug: React.FC = () => {
     if (!verifiable) return
     if (!api) return
     console.log("init verifiable")
+
+    create("Philip")
 
     verifiable
       .init()
@@ -92,36 +95,39 @@ export const Debug: React.FC = () => {
 
   return (
     <div className="relative flex w-auto flex-col space-y-2 rounded-md border p-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-6 lg:p-6">
-      {data && (
+      {pair && (
         <>
           <div className="space-y-2">
             <h2 className="text-4xl font-extrabold leading-6 tracking-tight">
-              {pair?.meta.name}
+              {pair.meta.name}
             </h2>
             <p className="mt-1 break-all font-mono text-sm text-gray-500">
-              {pair?.address}
+              {pair.address}
             </p>
           </div>
 
           <div className="flex flex-row justify-around">
             <div className="flex flex-1 flex-col items-end justify-center space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
               <div className="text-2xl font-bold tabular-nums">
-                {formatBalance(data.free.toBigInt(), { decimals })}
+                {data
+                  ? formatBalance(data.free.toBigInt(), { decimals })
+                  : "n/a"}
               </div>
               <p className="text-xs text-muted-foreground">Free</p>
             </div>
             <div className=" flex flex-1 flex-col items-end justify-center space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
               <div className="text-2xl font-bold tabular-nums">
-                {formatBalance(data.reserved.toBigInt(), { decimals })}
+                {data && formatBalance(data.reserved.toBigInt(), { decimals })}
               </div>
               <p className="text-xs text-muted-foreground">Reserved</p>
             </div>
             <div className=" flex flex-1 flex-col items-end justify-center space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
               <div className="text-2xl font-bold tabular-nums">
-                {formatBalance(data.frozen.toBigInt(), { decimals })}
+                {data && formatBalance(data.frozen.toBigInt(), { decimals })}
               </div>
               <p className="text-xs text-muted-foreground">Frozen</p>
             </div>
+            <Button onClick={() => create("Philip")}>Reroll</Button>
           </div>
         </>
       )}

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { ConnectionIndicator } from "./components/ConnectionIndicator"
 import { Debug } from "./components/Debug"
-import { ProofOfInk } from "./components/ProofOfInk"
+import { ImportMnemonic } from "./components/ImportMnemonic"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { RequireApi } from "./components/helpers/RequireApi"
 
@@ -21,6 +21,7 @@ function App() {
           <RequireApi fallback={null}>
             <div className="grid items-start justify-center gap-6 md:p-6 lg:grid-cols-1 xl:grid-cols-1">
               <Debug />
+              <ImportMnemonic />
               {/* <ProofOfInk /> */}
               {/* <AddDesignFamily /> */}
             </div>
