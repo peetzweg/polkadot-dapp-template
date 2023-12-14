@@ -57,7 +57,7 @@ export const Bandersnatch: React.FC = () => {
   }, [api, isReady, mnemonic, verifiable])
 
   useEffect(() => {
-    if (!isReady) return
+    if (!isReady || !mnemonic) return
     const entropy = api.createType("Entropy", mnemonicToEntropy(mnemonic))
     verifiable
       .memberFromEntropy(entropy.toU8a())
@@ -71,7 +71,6 @@ export const Bandersnatch: React.FC = () => {
     data,
     mutate: generateProof,
     isPending,
-    error,
   } = useMutation({
     mutationKey: [mnemonic],
     mutationFn: () => {

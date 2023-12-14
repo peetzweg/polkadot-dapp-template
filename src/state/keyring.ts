@@ -3,9 +3,6 @@ import { KeyringPair } from "@polkadot/keyring/types"
 import { mnemonicGenerate } from "@polkadot/util-crypto"
 import { create } from "zustand"
 
-const MNEMONIC =
-  "bottom drive obey lake curtain smoke basket hold race lonely fit walk"
-
 interface KeyringState {
   keyring: Keyring
   pair?: KeyringPair
