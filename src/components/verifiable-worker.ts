@@ -6,7 +6,7 @@ import init, {
 
 import * as Comlink from "comlink"
 
-interface ProofResults {
+export interface ProofResults {
   member: Uint8Array
   members: Uint8Array
   proof: Uint8Array

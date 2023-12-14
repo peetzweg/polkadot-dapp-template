@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useApi } from "../providers/api-provider.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Textarea } from "./ui/textarea.js"
-import { VerifiableWorker } from "./verifiable-worker.js"
+import { ProofResults, VerifiableWorker } from "./verifiable-worker.js"
 import verifiableWorkerUrl from "./verifiable-worker?worker&url"
 import { Input } from "./ui/input.js"
 import { useMutation } from "@tanstack/react-query"
@@ -91,7 +91,27 @@ export const Bandersnatch: React.FC = () => {
     },
   })
 
-  console.log({ data })
+  const { data: validationData, mutate: validate } = useMutation({
+    mutationFn: (results: ProofResults) => {
+      return verifiable.validate(
+        results.proof,
+        results.members,
+        results.context!,
+        results.message!,
+      )
+    },
+    onSuccess: () => {
+      setTimeout(
+        () =>
+          window.scrollTo({
+            behavior: "smooth",
+            top: Number.MAX_SAFE_INTEGER,
+          }),
+        200,
+      )
+    },
+    mutationKey: [],
+  })
 
   return (
     <div className="relative flex w-auto flex-col gap-6 rounded-md border p-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-6 lg:p-6">
@@ -170,6 +190,33 @@ export const Bandersnatch: React.FC = () => {
                 />
               </div>
             </div>
+          </div>
+        )}
+
+        {data && (
+          <div className=" flex flex-col gap-4 border-dashed  p-4 md:-mx-6 md:-mb-6 md:p-6 lg:p-6">
+            <div>
+              <h2 className="text-xl font-extrabold leading-6 tracking-tight">
+                Validate Proof
+              </h2>
+              <p className="break-all font-mono text-sm text-gray-500"></p>
+            </div>
+            <Button onClick={() => validate(data)}>Validate Proof</Button>
+            {validationData && (
+              <div className="flex flex-col">
+                <Input
+                  className="w-full font-mono"
+                  readOnly
+                  value={api.createType("Alias", validationData.alias).toHex()}
+                />
+                <div className="flex flex-col items-center justify-center text-sm text-muted-foreground">
+                  {api.createType("Alias", validationData.alias).toHex() ==
+                  api.createType("Alias", data.alias).toHex()
+                    ? "ALIAS EQUAL => Proof Valid"
+                    : "ALAIS NOT EQUAL => Proof Invalid"}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </>
