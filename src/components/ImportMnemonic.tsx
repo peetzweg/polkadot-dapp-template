@@ -5,7 +5,7 @@ import * as z from "zod"
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Pencil1Icon } from "@radix-ui/react-icons"
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { cn } from "../lib/utils"
 import { useKeyringStore } from "../state/keyring"
@@ -27,7 +27,11 @@ const formSchema = z.object({
 })
 
 export const ImportMnemonic: React.FC = () => {
-  const { createFromMnemonic, create } = useKeyringStore()
+  const { createFromMnemonic, create, store, restore } = useKeyringStore()
+
+  useEffect(() => {
+    restore()
+  }, [])
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
@@ -35,8 +39,9 @@ export const ImportMnemonic: React.FC = () => {
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     ({ mnemonic }) => {
       createFromMnemonic(mnemonic, "Imported Seed")
+      store()
     },
-    [createFromMnemonic],
+    [createFromMnemonic, store],
   )
 
   return (
@@ -53,6 +58,7 @@ export const ImportMnemonic: React.FC = () => {
             className="justify-center"
             onClick={() => {
               create("Fresh Account")
+              store()
             }}
           >
             Create

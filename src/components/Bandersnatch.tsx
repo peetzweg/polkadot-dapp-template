@@ -56,7 +56,6 @@ export const Bandersnatch: React.FC = () => {
       })
   }, [api, isReady, mnemonic, verifiable])
 
-  console.log({ members, me })
   useEffect(() => {
     if (!isReady) return
     const entropy = api.createType("Entropy", mnemonicToEntropy(mnemonic))
@@ -117,7 +116,7 @@ export const Bandersnatch: React.FC = () => {
     <div className="relative flex w-auto flex-col gap-6 rounded-md border p-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-6 lg:p-6">
       <>
         <div className="space-y-2">
-          <h2 className="text-4xl font-extrabold leading-6 tracking-tight">
+          <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
             Bandersnatch
           </h2>
           {/* <p className="mt-1 break-all font-mono text-sm text-gray-500">

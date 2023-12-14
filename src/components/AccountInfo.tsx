@@ -3,10 +3,11 @@ import { formatBalance } from "../lib/formatBalance.js"
 import { useApi } from "../providers/api-provider.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
+import { Textarea } from "./ui/textarea.js"
 
 export const AccountInfo: React.FC = () => {
   const { api, decimals } = useApi()
-  const { pair, create, mnemonic } = useKeyringStore()
+  const { pair, mnemonic, clear } = useKeyringStore()
 
   const { data } = useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
@@ -20,10 +21,10 @@ export const AccountInfo: React.FC = () => {
   if (!pair) return null
 
   return (
-    <div className="relative flex w-auto flex-col space-y-2 rounded-md border p-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-6 lg:p-6">
+    <div className="relative flex w-auto flex-col gap-4 rounded-md border p-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-6 lg:p-6">
       <>
         <div className="space-y-2">
-          <h2 className="text-4xl font-extrabold leading-6 tracking-tight">
+          <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
             {pair.meta.name}
           </h2>
           <p className="mt-1 break-all font-mono text-sm text-gray-500">
@@ -50,7 +51,14 @@ export const AccountInfo: React.FC = () => {
             </div>
             <p className="text-xs text-muted-foreground">Frozen</p>
           </div>
-          <Button onClick={() => create("Philip")}>Reroll</Button>
+        </div>
+        <div>
+          <Textarea readOnly className="text-sm" value={mnemonic} />
+        </div>
+        <div className="flex flex-row justify-end">
+          <Button variant={"destructive"} onClick={clear}>
+            Forget
+          </Button>
         </div>
       </>
     </div>
