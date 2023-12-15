@@ -2,6 +2,7 @@
 import { AccountInfo } from "./components/AccountInfo"
 import { Bandersnatch } from "./components/Bandersnatch"
 import { ConnectionIndicator } from "./components/ConnectionIndicator"
+import { Faucet } from "./components/Faucet"
 import { ImportMnemonic } from "./components/ImportMnemonic"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { RequireApi } from "./components/helpers/RequireApi"
@@ -26,6 +27,7 @@ function App() {
               {!pair && <ImportMnemonic />}
               {pair && (
                 <>
+                  <Faucet />
                   <AccountInfo />
                   <Bandersnatch />
                 </>
