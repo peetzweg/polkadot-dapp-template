@@ -1,6 +1,8 @@
 // TODO replace with @polkadot/typegen
-import "@polkadot/api-augment"
-import "@polkadot/api-base"
+// import "@polkadot/api-augment"
+// import "@polkadot/api-base"
+import "./interfaces/augment-api"
+import "./interfaces/augment-types"
 import "./global.css"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import React from "react"
