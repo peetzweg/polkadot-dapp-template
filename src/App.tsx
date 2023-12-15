@@ -1,15 +1,18 @@
 /* eslint-disable no-console */
 import { AccountInfo } from "./components/AccountInfo"
+import { Apply } from "./components/Apply"
 import { Bandersnatch } from "./components/Bandersnatch"
+import { CandidateState } from "./components/CandidateState"
 import { ConnectionIndicator } from "./components/ConnectionIndicator"
 import { Faucet } from "./components/Faucet"
-import { ImportMnemonic } from "./components/ImportMnemonic"
+import { NewAccount } from "./components/NewAccount"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { RequireApi } from "./components/helpers/RequireApi"
 import { useKeyringStore } from "./state/keyring"
 
 function App() {
   const { pair } = useKeyringStore()
+
   return (
     <div className="relative flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 w-full border-b  bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -21,21 +24,27 @@ function App() {
         </div>
       </header>
       <div className="flex-1">
-        <main className="relative col-auto mx-auto grid w-full py-6 sm:py-2">
+        <main className="relative mx-auto w-full py-6 sm:py-2">
           <RequireApi fallback={null}>
-            <div className="grid items-start justify-center gap-6 md:p-6 lg:grid-cols-1 xl:grid-cols-1">
-              {!pair && <ImportMnemonic />}
-              {pair && (
-                <>
+            {!pair && (
+              <div className="flex flex-col gap-4 px-4 py-2">
+                <NewAccount />
+              </div>
+            )}
+            {pair && (
+              <div className="flex flex-col gap-4 px-4 py-2">
+                <div className="md:grid-flow-col-2 auto-rows grid grid-cols-1 gap-4 lg:grid-cols-3">
                   <Faucet />
                   <AccountInfo />
-                  <Bandersnatch />
-                </>
-              )}
+                  <CandidateState />
+                  <Apply />
 
-              {/* <ProofOfInk /> */}
-              {/* <AddDesignFamily /> */}
-            </div>
+                  {/* <ProofOfInk /> */}
+                  {/* <AddDesignFamily /> */}
+                </div>
+                <Bandersnatch />
+              </div>
+            )}
           </RequireApi>
         </main>
       </div>

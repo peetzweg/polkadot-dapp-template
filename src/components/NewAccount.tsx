@@ -26,7 +26,11 @@ const formSchema = z.object({
     ),
 })
 
-export const ImportMnemonic: React.FC = () => {
+interface NewAccountProps {
+  className?: string
+}
+
+export const NewAccount: React.FC<NewAccountProps> = ({ className }) => {
   const { createFromMnemonic, create, store, restore } = useKeyringStore()
 
   useEffect(() => {
@@ -45,7 +49,12 @@ export const ImportMnemonic: React.FC = () => {
   )
 
   return (
-    <div className="relative flex w-auto flex-col gap-6 rounded-md border p-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-6 lg:p-6">
+    <div
+      className={cn(
+        "relative col-span-1 flex h-full w-auto flex-col gap-4 rounded-md border p-4 md:p-6 lg:p-6",
+        className,
+      )}
+    >
       <div className=" space-y-2">
         <h3 className="text-3xl font-extrabold leading-6 tracking-tight">
           Fresh Account
@@ -66,7 +75,7 @@ export const ImportMnemonic: React.FC = () => {
         </div>
       </div>
 
-      <div className="relative -mx-6">
+      <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
         </div>
@@ -114,8 +123,9 @@ export const ImportMnemonic: React.FC = () => {
                 </div>
                 <div>
                   <p className="font-mono text-sm text-muted-foreground">
-                    bottom drive obey lake curtain smoke basket hold race lonely
-                    fit walk
+                    trip speak genre target baby brass drive blossom under
+                    improve erosion blade author shock hospital orphan manage
+                    sibling flip old sunset demand flame bulb
                   </p>
                 </div>
               </FormItem>

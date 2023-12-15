@@ -4,8 +4,13 @@ import { useApi } from "../providers/api-provider.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
 import { Textarea } from "./ui/textarea.js"
+import { cn } from "../lib/utils.js"
 
-export const AccountInfo: React.FC = () => {
+interface AccountInfoProps {
+  className?: string
+}
+
+export const AccountInfo: React.FC<AccountInfoProps> = ({ className }) => {
   const { api, decimals } = useApi()
   const { pair, mnemonic, clear } = useKeyringStore()
 
@@ -15,13 +20,19 @@ export const AccountInfo: React.FC = () => {
     queryFn: async () => {
       return (await api.query.system.account(pair!.address)).data
     },
+    staleTime: 2000,
     enabled: !!pair,
   })
 
   if (!pair) return null
 
   return (
-    <div className="relative flex w-auto flex-col gap-4 rounded-md border p-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-6 lg:p-6">
+    <div
+      className={cn(
+        "relative col-span-1 flex h-full w-auto flex-col gap-4 rounded-md border p-4 md:p-6 lg:p-6",
+        className,
+      )}
+    >
       <>
         <div className="space-y-2">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
@@ -53,7 +64,7 @@ export const AccountInfo: React.FC = () => {
           </div>
         </div>
         <div>
-          <Textarea readOnly className="text-sm" value={mnemonic} />
+          <Textarea readOnly rows={3} className="text-sm" value={mnemonic} />
         </div>
         <div className="flex flex-row justify-end">
           <Button variant={"destructive"} onClick={clear}>

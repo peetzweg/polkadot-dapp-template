@@ -112,7 +112,7 @@ export const Bandersnatch: React.FC = () => {
   })
 
   return (
-    <div className="relative flex w-auto flex-col gap-6 rounded-md border p-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-6 lg:p-6">
+    <div className="relative flex max-w-full flex-col gap-6 rounded-md border p-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-6 lg:p-6">
       <>
         <div className="space-y-2">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
@@ -141,12 +141,16 @@ export const Bandersnatch: React.FC = () => {
           <p className="break-all font-mono text-sm text-gray-500">
             Public keys of members in set
           </p>
-          <div className="flex flex-col font-mono text-sm">
-            {members
-              .map((m) => api.createType("Member", m).toHex())
-              .map((m) => (
-                <div key={m}>{m}</div>
-              ))}
+          <div className="w-full max-w-full overflow-auto">
+            <div className="flex flex-col font-mono text-sm">
+              {members
+                .map((m) => api.createType("Member", m).toHex())
+                .map((m) => (
+                  <div className="" key={m}>
+                    {m}
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
         <div>
