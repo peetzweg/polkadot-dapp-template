@@ -1,14 +1,13 @@
 import { mnemonicGenerate, mnemonicToEntropy } from "@polkadot/util-crypto"
-import * as Comlink from "comlink"
-import { useEffect, useMemo, useState } from "react"
-import { useApi } from "../providers/api-provider.js"
-import { useKeyringStore } from "../state/keyring.js"
-import { Textarea } from "./ui/textarea.js"
-import { ProofResults, VerifiableWorker } from "./verifiable-worker.js"
-import verifiableWorkerUrl from "./verifiable-worker?worker&url"
-import { Input } from "./ui/input.js"
 import { useMutation } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
+import { useApi } from "../providers/api-provider.js"
+import { useVerifiable } from "../queries/useVerifiable.js"
+import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
+import { Input } from "./ui/input.js"
+import { Textarea } from "./ui/textarea.js"
+import { ProofResults } from "./verifiable-worker.js"
 
 export const Bandersnatch: React.FC = () => {
   // TODO how to use generated pair as entropy
@@ -18,23 +17,10 @@ export const Bandersnatch: React.FC = () => {
   const { api } = useApi()
   const { mnemonic } = useKeyringStore()
 
-  const [isReady, setReady] = useState(false)
   const [members, setMembers] = useState<Uint8Array[]>([])
   const [me, setMe] = useState<Uint8Array | undefined>(undefined)
 
-  const verifiable: Comlink.Remote<VerifiableWorker> = useMemo(() => {
-    const rawWorker = new Worker(verifiableWorkerUrl, { type: "module" })
-    return Comlink.wrap(rawWorker)
-  }, [])
-
-  useEffect(() => {
-    verifiable
-      .init()
-      .then(() => setReady(true))
-      .catch((error) => {
-        console.log("Error during init of verifiable", error)
-      })
-  }, [verifiable])
+  const { verifiable, isReady } = useVerifiable()
 
   useEffect(() => {
     if (!isReady || !mnemonic) return
