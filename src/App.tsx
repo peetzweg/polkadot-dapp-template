@@ -3,7 +3,9 @@ import { AccountInfo } from "./components/AccountInfo"
 import { Apply } from "./components/Apply"
 import { Bandersnatch } from "./components/Bandersnatch"
 import { CandidateState } from "./components/CandidateState"
+import { Commit } from "./components/Commit"
 import { ConnectionIndicator } from "./components/ConnectionIndicator"
+import { Evidence } from "./components/Evidence"
 import { Faucet } from "./components/Faucet"
 import { NewAccount } from "./components/NewAccount"
 import { ThemeToggle } from "./components/ThemeToggle"
@@ -38,6 +40,8 @@ function App() {
                   <AccountInfo />
                   <CandidateState />
                   <Apply />
+                  <Commit />
+                  <Evidence />
 
                   {/* <ProofOfInk /> */}
                   {/* <AddDesignFamily /> */}

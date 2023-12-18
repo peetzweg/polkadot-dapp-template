@@ -57,7 +57,7 @@ export const Apply: React.FC<ApplyProps> = ({ className }) => {
       <>
         <div className="space-y-2">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
-            Apply for Polkadot Citizenship
+            Apply for Citizenship
           </h2>
         </div>
 

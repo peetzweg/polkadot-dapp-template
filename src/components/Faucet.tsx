@@ -72,8 +72,6 @@ export const Faucet: React.FC<FaucetProps> = ({ className }) => {
             reject(error)
           })
       })
-
-      return
     },
 
     [decimals, api.tx.balances, pair, queryClient],

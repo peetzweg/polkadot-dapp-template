@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useApi } from "../providers/api-provider"
 import { useKeyringStore } from "../state/keyring"
 
-export const QUERY_KEY_CANDIDATE_STATE = ["proofOfInk", "candidates"]
+export const QUERY_KEY_MOB_RULE_STATE = ["proofOfInk", "candidates"]
 
 // 0. Not Applied
 // 1. Applied
@@ -10,7 +10,7 @@ export const QUERY_KEY_CANDIDATE_STATE = ["proofOfInk", "candidates"]
 // 3. Being Judged => check selected fields
 // 4. Proved
 
-export const useQueryCandidateState = () => {
+export const useQueryMobRuleState = () => {
   const { api } = useApi()
   const { pair } = useKeyringStore()
 

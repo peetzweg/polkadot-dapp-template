@@ -9,7 +9,7 @@ interface CandidateStateProps {
 export const CandidateState: React.FC<CandidateStateProps> = ({
   className,
 }) => {
-  const { data } = useQueryCandidateState()
+  const { data: candidate } = useQueryCandidateState()
 
   return (
     <div
@@ -26,27 +26,28 @@ export const CandidateState: React.FC<CandidateStateProps> = ({
         </div>
 
         <Step
-          done={data !== undefined}
-          active={data === undefined}
+          done={candidate !== undefined}
+          active={candidate === undefined}
           label="Apply for citizenship"
           description="Use voucher or pay dot"
         />
 
         <Step
-          done={data && (data.isSelected || data.isProven)}
-          active={data && data.isApplied}
+          done={candidate && (candidate.isSelected || candidate.isProven)}
+          active={candidate && candidate.isApplied}
           label="Commit to a Tattoo"
           description="Select a Tattoo you want to get"
         />
 
         <Step
-          active={data && data.isSelected}
+          active={candidate && candidate.asSelected.judging.isNone}
+          done={candidate && candidate.asSelected.judging.isSome}
           label="Submit Evidence"
           description="Upload a video of you getting the tattoo"
         />
 
         <Step
-          active={data && data.isProven}
+          active={candidate && candidate.isProven}
           label="Get Mob Ruled"
           description="Your application to become a citizen is being judged now."
         />
