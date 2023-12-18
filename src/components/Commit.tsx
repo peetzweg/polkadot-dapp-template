@@ -97,7 +97,7 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
       <div className="flex h-full flex-col justify-between">
         <div className="space-y-2">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
-            Commit to Tattoo
+            Commit to a Tattoo
           </h2>
         </div>
 
@@ -106,7 +106,7 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
             // TODO type error of react-hook-forms?
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
+            className="mt-4 flex h-full flex-col justify-center gap-4"
           >
             <div className="flex flex-row items-center justify-center gap-2">
               <FormField
@@ -148,6 +148,7 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
                 )}
               />
             </div>
+
             <Button
               type="submit"
               disabled={form.formState.isLoading || !form.formState.isValid}

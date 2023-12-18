@@ -1,5 +1,6 @@
 import { cn } from "../lib/utils.js"
 import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
+import { useQueryMobRuleState } from "../queries/useQueryMobRuleState.js"
 import { Checkbox } from "./ui/checkbox.js"
 
 interface CandidateStateProps {
@@ -10,6 +11,7 @@ export const CandidateState: React.FC<CandidateStateProps> = ({
   className,
 }) => {
   const { data: candidate } = useQueryCandidateState()
+  const { data: mobRuleCase } = useQueryMobRuleState()
 
   return (
     <div
@@ -47,7 +49,8 @@ export const CandidateState: React.FC<CandidateStateProps> = ({
         />
 
         <Step
-          active={candidate && candidate.isProven}
+          done={mobRuleCase?.isDone}
+          active={mobRuleCase?.isOpen}
           label="Get Mob Ruled"
           description="Your application to become a citizen is being judged now."
         />
