@@ -9,6 +9,7 @@ import { Evidence } from "./components/Evidence"
 import { Faucet } from "./components/Faucet"
 import { MobRuleState } from "./components/MobRuleState"
 import { NewAccount } from "./components/NewAccount"
+import { Register } from "./components/Register"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { RequireApi } from "./components/helpers/RequireApi"
 import { useKeyringStore } from "./state/keyring"
@@ -44,10 +45,12 @@ function App() {
                   <Commit />
                   <Evidence />
                   <MobRuleState />
+                  {/* <Intervene /> */}
+                  <Register />
 
-                  {/* <ProofOfInk /> */}
                   {/* <AddDesignFamily /> */}
                 </div>
+                <hr className="my-10" />
                 <Bandersnatch />
               </div>
             )}

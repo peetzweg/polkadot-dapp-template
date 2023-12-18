@@ -1,7 +1,10 @@
+import { useState } from "react"
 import { cn } from "../lib/utils.js"
 import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
 import { useQueryMobRuleState } from "../queries/useQueryMobRuleState.js"
 import { Checkbox } from "./ui/checkbox.js"
+import { Textarea } from "./ui/textarea.js"
+import { Button } from "./ui/button.js"
 
 interface CandidateStateProps {
   className?: string
@@ -10,6 +13,7 @@ interface CandidateStateProps {
 export const CandidateState: React.FC<CandidateStateProps> = ({
   className,
 }) => {
+  const [showRaw, setRaw] = useState(false)
   const { data: candidate } = useQueryCandidateState()
   const { data: mobRuleCase } = useQueryMobRuleState()
 
@@ -21,39 +25,64 @@ export const CandidateState: React.FC<CandidateStateProps> = ({
       )}
     >
       <>
-        <div className="space-y-2">
+        <div className="flex flex-row items-center justify-between ">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
             Candidate State
           </h2>
+          <Button variant={"ghost"} onClick={() => setRaw((prev) => !prev)}>
+            Show Raw
+          </Button>
         </div>
 
-        <Step
-          done={candidate !== undefined}
-          active={candidate === undefined}
-          label="Apply for citizenship"
-          description="Use voucher or pay dot"
-        />
+        {showRaw ? (
+          <div>
+            <Textarea
+              rows={10}
+              disabled
+              value={JSON.stringify(candidate, undefined, 2)}
+            />
+          </div>
+        ) : (
+          <>
+            <Step
+              done={candidate !== undefined}
+              active={candidate === undefined}
+              label="Apply for citizenship"
+              description="Use voucher or pay dot"
+            />
 
-        <Step
-          done={candidate && (candidate.isSelected || candidate.isProven)}
-          active={candidate && candidate.isApplied}
-          label="Commit to a Tattoo"
-          description="Select a Tattoo you want to get"
-        />
+            <Step
+              done={candidate && (candidate.isSelected || candidate.isProven)}
+              active={candidate && candidate.isApplied}
+              label="Commit to a Tattoo"
+              description="Select a Tattoo you want to get"
+            />
 
-        <Step
-          active={candidate && candidate.asSelected.judging.isNone}
-          done={candidate && candidate.asSelected.judging.isSome}
-          label="Submit Evidence"
-          description="Upload a video of you getting the tattoo"
-        />
+            <Step
+              active={
+                candidate?.isSelected && candidate.asSelected.judging.isNone
+              }
+              done={
+                candidate?.isSelected && candidate.asSelected.judging.isSome
+              }
+              label="Submit Evidence"
+              description="Upload a video of you getting the tattoo"
+            />
 
-        <Step
-          done={mobRuleCase?.isDone}
-          active={mobRuleCase?.isOpen}
-          label="Get Mob Ruled"
-          description="Your application to become a citizen is being judged now."
-        />
+            <Step
+              done={mobRuleCase?.isDone}
+              active={mobRuleCase?.isOpen}
+              label="Get Mob Ruled"
+              description="Your application to become a citizen is being judged now."
+            />
+            <Step
+              done={mobRuleCase?.isDone}
+              active={mobRuleCase?.isOpen}
+              label="Register as Person"
+              description="Create an Alias"
+            />
+          </>
+        )}
       </>
     </div>
   )

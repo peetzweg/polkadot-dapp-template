@@ -2,16 +2,23 @@ import { useMemo } from "react"
 import { cn } from "../lib/utils.js"
 import { useQueryMobRuleState } from "../queries/useQueryMobRuleState.js"
 import { Textarea } from "./ui/textarea.js"
+import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
 
 interface MobRuleStateProps {
   className?: string
 }
 
 export const MobRuleState: React.FC<MobRuleStateProps> = ({ className }) => {
+  const { data: candidate } = useQueryCandidateState()
   const { data: mobRuleCase } = useQueryMobRuleState()
 
+  const judgingId = useMemo(() => {
+    if (!candidate?.isSelected || candidate?.asSelected.judging.isNone) return
+    return candidate?.asSelected.judging.unwrap().toNumber()
+  }, [candidate])
+
   const { active, done } = useMemo(() => {
-    return { active: mobRuleCase?.asOpen, done: mobRuleCase?.isDone }
+    return { active: mobRuleCase?.isOpen, done: mobRuleCase?.isDone }
   }, [mobRuleCase])
 
   return (
@@ -27,15 +34,16 @@ export const MobRuleState: React.FC<MobRuleStateProps> = ({ className }) => {
       )}
     >
       <>
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
             Mob Rule Case
           </h2>
+          {judgingId && <code>{`Case: ${judgingId}`}</code>}
         </div>
 
         {!mobRuleCase ? (
           <div className="flex h-32 items-center justify-center">
-            No case opened yet
+            No case open.
           </div>
         ) : mobRuleCase?.isOpen ? (
           <div>

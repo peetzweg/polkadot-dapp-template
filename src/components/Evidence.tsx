@@ -73,11 +73,15 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
 
   const { active, done } = useMemo(() => {
     return {
-      active: candidate?.isSelected && candidate.asSelected.judging.isNone,
-      done: candidate?.isSelected && candidate.asSelected.judging.isSome,
+      active:
+        candidate?.isSelected &&
+        candidate.asSelected.judging.isNone &&
+        !candidate.isProven,
+      done:
+        !!(candidate?.isSelected && candidate.asSelected.judging.isSome) ||
+        !!candidate?.isProven,
     }
   }, [candidate])
-  console.log({ active, done, candidate: candidate?.toPrimitive() })
 
   return (
     <div

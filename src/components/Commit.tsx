@@ -79,7 +79,10 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
   )
 
   const { active, done } = useMemo(() => {
-    return { active: candidate?.isApplied, done: candidate?.isSelected }
+    return {
+      active: candidate?.isApplied,
+      done: !!candidate?.isSelected || !!candidate?.isProven,
+    }
   }, [candidate])
 
   return (

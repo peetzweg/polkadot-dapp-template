@@ -13,7 +13,9 @@ export const useQueryMobRuleState = () => {
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: [
       ...QUERY_KEY_MOB_RULE_STATE,
-      candidate?.asSelected.judging.unwrapOrDefault(),
+      candidate?.isSelected
+        ? candidate?.asSelected.judging.unwrapOrDefault()
+        : undefined,
     ],
     queryFn: async () => {
       const judgingId = candidate?.asSelected.judging.unwrapOrDefault()

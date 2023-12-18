@@ -43,7 +43,7 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ className }) => {
           </p>
         </div>
 
-        <div className="flex flex-row justify-around">
+        <div className="flex flex-row justify-around gap-2">
           <div className="flex flex-1 flex-col items-end justify-center space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
             <div className="text-2xl font-bold tabular-nums">
               {data ? formatBalance(data.free.toBigInt(), { decimals }) : "n/a"}
