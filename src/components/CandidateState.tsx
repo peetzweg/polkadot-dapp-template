@@ -1,8 +1,6 @@
-import { useQuery } from "@tanstack/react-query"
-import { useApi } from "../providers/api-provider.js"
-import { useKeyringStore } from "../state/keyring.js"
-import { Checkbox } from "./ui/checkbox.js"
 import { cn } from "../lib/utils.js"
+import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
+import { Checkbox } from "./ui/checkbox.js"
 
 interface CandidateStateProps {
   className?: string
@@ -11,20 +9,7 @@ interface CandidateStateProps {
 export const CandidateState: React.FC<CandidateStateProps> = ({
   className,
 }) => {
-  const { api } = useApi()
-  const { pair } = useKeyringStore()
-
-  const { data } = useQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: ["proofOfInk", "candidates", pair?.address],
-    queryFn: async () => {
-      const state = await api.query.proofOfInk.candidates(pair!.address)
-      if (state.isNone) return undefined
-
-      return state.unwrap()
-    },
-    enabled: !!pair,
-  })
+  const { data } = useQueryCandidateState()
 
   return (
     <div

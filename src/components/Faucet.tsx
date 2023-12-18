@@ -16,6 +16,7 @@ import { ArrowDownIcon } from "@radix-ui/react-icons"
 import { useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { cn } from "../lib/utils"
+import { handleApiError } from "../lib/handleApiError.js"
 
 const formSchema = z.object({
   receiver: z.string().min(2).max(50),
@@ -52,14 +53,27 @@ export const Faucet: React.FC<FaucetProps> = ({ className }) => {
     async ({ receiver, value }) => {
       // TODO! unsave scaling, can overflow and not work with to many decimals
       const scaledValue = Number(value) * 10 ** decimals
+      return new Promise((resolve, reject) => {
+        api.tx.balances
+          .transferAllowDeath(receiver, scaledValue)
+          .signAndSend(pair, (event) => {
+            if (event.isCompleted) {
+              resolve(event)
+              void queryClient.invalidateQueries({
+                queryKey: ["system.account"],
+              })
+            }
+            if (event.isError) {
+              reject(event)
+            }
+          })
+          .catch((error) => {
+            handleApiError(error)
+            reject(error)
+          })
+      })
 
-      return api.tx.balances
-        .transferAllowDeath(receiver, scaledValue)
-        .signAndSend(pair, (event) => {
-          if (event.isCompleted) {
-            void queryClient.invalidateQueries({ queryKey: ["system.account"] })
-          }
-        })
+      return
     },
 
     [decimals, api.tx.balances, pair, queryClient],

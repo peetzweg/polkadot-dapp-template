@@ -1,8 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
+import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
+import toast from "react-hot-toast"
+import { handleApiError } from "../lib/handleApiError.js"
 
 interface ApplyProps {
   className?: string
@@ -13,27 +16,28 @@ export const Apply: React.FC<ApplyProps> = ({ className }) => {
   const { pair } = useKeyringStore()
   const queryClient = useQueryClient()
 
-  const { data } = useQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: ["proofOfInk", "candidates", pair?.address],
-    queryFn: async () => {
-      const state = await api.query.proofOfInk.candidates(pair!.address)
-      if (state.isNone) return undefined
-
-      return state.unwrap()
-    },
-    enabled: !!pair,
-  })
+  const { data, isLoading } = useQueryCandidateState()
 
   const { mutate: apply, isPending } = useMutation({
     mutationKey: ["proofOfInk", "apply", pair?.address],
     mutationFn: () => {
       const applyCall = api.tx.proofOfInk.apply()
-      return applyCall.signAndSend(pair!, (event) => {
-        // TODO resolve here a new promise, so it's pending till isComplete
-        if (event.isCompleted) {
-          void queryClient.invalidateQueries({ queryKey: ["proofOfInk"] })
-        }
+
+      return new Promise((resolve, reject) => {
+        applyCall
+          .signAndSend(pair!, (event) => {
+            if (event.isCompleted) {
+              void queryClient.invalidateQueries({ queryKey: ["proofOfInk"] })
+              resolve(event)
+            }
+            if (event.isError) {
+              reject(event)
+            }
+          })
+          .catch((error) => {
+            handleApiError(error)
+            reject(error)
+          })
       })
     },
   })
@@ -46,7 +50,7 @@ export const Apply: React.FC<ApplyProps> = ({ className }) => {
         {
           "pointer-events-none opacity-25": data !== undefined,
           "outline-none ring-2 ring-ring ring-offset-2 ring-offset-background":
-            data === undefined,
+            data === undefined && !isLoading,
         },
       )}
     >
