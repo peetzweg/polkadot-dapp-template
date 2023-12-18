@@ -1,4 +1,4 @@
-import { Pencil1Icon } from "@radix-ui/react-icons"
+import { Pencil1Icon, ShadowInnerIcon } from "@radix-ui/react-icons"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo } from "react"
 import { SubmitHandler } from "react-hook-form"
@@ -172,12 +172,16 @@ export const Faucet: React.FC<FaucetProps> = ({ className }) => {
                 type="submit"
               >
                 Transfer
-                <Pencil1Icon
-                  className={cn([
-                    "ml-2 transition-transform",
-                    { "m-0 w-0": !form.formState.isValid },
-                  ])}
-                />
+                {form.formState.isSubmitting ? (
+                  <ShadowInnerIcon className="ml-2 animate-spin" />
+                ) : (
+                  <Pencil1Icon
+                    className={cn([
+                      "ml-2 transition-transform",
+                      { "m-0 w-0": !form.formState.isValid },
+                    ])}
+                  />
+                )}
               </Button>
             </div>
           </form>

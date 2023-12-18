@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { handleApiError } from "../lib/handleApiError.js"
 import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
 import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
-import toast from "react-hot-toast"
-import { handleApiError } from "../lib/handleApiError.js"
+import { CheckCircledIcon, ShadowInnerIcon } from "@radix-ui/react-icons"
+import { useMemo } from "react"
 
 interface ApplyProps {
   className?: string
@@ -42,15 +43,19 @@ export const Apply: React.FC<ApplyProps> = ({ className }) => {
     },
   })
 
+  const { active, done } = useMemo(() => {
+    return { done: data !== undefined, active: data === undefined && isLoading }
+  }, [data, isLoading])
+
   return (
     <div
       className={cn(
         "relative col-span-1 flex h-full w-auto flex-col gap-4 rounded-md border p-4 md:p-6 lg:p-6",
         className,
         {
-          "pointer-events-none opacity-25": data !== undefined,
+          "pointer-events-none opacity-25": done,
           "outline-none ring-2 ring-ring ring-offset-2 ring-offset-background":
-            data === undefined && !isLoading,
+            active,
         },
       )}
     >
@@ -78,6 +83,7 @@ export const Apply: React.FC<ApplyProps> = ({ className }) => {
 
           <Button disabled={isPending} onClick={() => apply()}>
             With <code className="pl-1">DOT</code>
+            {isPending && <ShadowInnerIcon className="ml-2 animate-spin" />}
           </Button>
         </div>
       </>

@@ -63,18 +63,21 @@ export const CandidateState: React.FC<CandidateStateProps> = ({
                 candidate?.isSelected && candidate.asSelected.judging.isNone
               }
               done={
-                candidate?.isSelected && candidate.asSelected.judging.isSome
+                !!(
+                  candidate?.isSelected && candidate.asSelected.judging.isSome
+                ) || candidate?.isProven
               }
               label="Submit Evidence"
               description="Upload a video of you getting the tattoo"
             />
 
             <Step
-              done={mobRuleCase?.isDone}
+              done={!!mobRuleCase?.isDone || !!candidate?.isProven}
               active={mobRuleCase?.isOpen}
               label="Get Mob Ruled"
               description="Your application to become a citizen is being judged now."
             />
+
             <Step
               done={mobRuleCase?.isDone}
               active={mobRuleCase?.isOpen}

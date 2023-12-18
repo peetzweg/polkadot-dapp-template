@@ -23,6 +23,7 @@ export const Intervene: React.FC<InterveneProps> = ({ className }) => {
     mutationFn: () => {
       const applyCall = api.tx.proofOfInk.apply()
 
+      // TODO craft XCM call here
       return new Promise((resolve, reject) => {
         applyCall
           .signAndSend(pair!, (event) => {

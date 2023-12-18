@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { UploadIcon } from "@radix-ui/react-icons"
+import { ShadowInnerIcon, UploadIcon } from "@radix-ui/react-icons"
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
@@ -89,7 +89,7 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
         "relative col-span-1 flex h-full w-auto flex-col gap-4 rounded-md border p-4 md:p-6 lg:p-6",
         className,
         {
-          "pointer-events-none opacity-25": done ?? !active,
+          "pointer-events-none opacity-25": !!done || !active,
           "outline-none ring-2 ring-ring ring-offset-2 ring-offset-background":
             active,
         },
@@ -129,9 +129,18 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
             </div>
             <Button
               type="submit"
-              disabled={form.formState.isLoading || !form.formState.isValid}
+              disabled={
+                form.formState.isLoading ||
+                !form.formState.isValid ||
+                form.formState.isSubmitting
+              }
             >
-              Submit <UploadIcon className="ml-2" />
+              Submit{" "}
+              {form.formState.isSubmitting ? (
+                <ShadowInnerIcon className="ml-2 animate-spin" />
+              ) : (
+                <UploadIcon className="ml-2" />
+              )}
             </Button>
           </form>
         </Form>

@@ -48,7 +48,7 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
         "relative col-span-1 flex h-full w-auto flex-col gap-4 rounded-md border p-4 md:p-6 lg:p-6",
         className,
         {
-          "pointer-events-none opacity-25": false,
+          "pointer-events-none opacity-25": !candidate?.isProven,
           "outline-none ring-2 ring-ring ring-offset-2 ring-offset-background":
             candidate?.isProven,
         },

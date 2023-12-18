@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { BlendingModeIcon } from "@radix-ui/react-icons"
+import { BlendingModeIcon, ShadowInnerIcon } from "@radix-ui/react-icons"
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
@@ -49,8 +49,6 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     ({ family, index }) => {
-      console.log({ family, index })
-
       const call = api.tx.proofOfInk.commit(
         { Procedural: [3, Number(index)] },
         null,
@@ -80,7 +78,7 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
 
   const { active, done } = useMemo(() => {
     return {
-      active: candidate?.isApplied,
+      active: !!candidate?.isApplied,
       done: !!candidate?.isSelected || !!candidate?.isProven,
     }
   }, [candidate])
@@ -91,7 +89,7 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
         "relative col-span-1 flex h-full w-auto flex-col gap-4 rounded-md border p-4 md:p-6 lg:p-6",
         className,
         {
-          "pointer-events-none opacity-25": done ?? !active,
+          "pointer-events-none opacity-25": !!done || !active,
           "outline-none ring-2 ring-ring ring-offset-2 ring-offset-background":
             active,
         },
@@ -154,9 +152,18 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
 
             <Button
               type="submit"
-              disabled={form.formState.isLoading || !form.formState.isValid}
+              disabled={
+                form.formState.isLoading ||
+                !form.formState.isValid ||
+                form.formState.isSubmitting
+              }
             >
-              Commit <BlendingModeIcon className="ml-2" />
+              Commit{" "}
+              {form.formState.isSubmitting ? (
+                <ShadowInnerIcon className="ml-2 animate-spin" />
+              ) : (
+                <BlendingModeIcon className="ml-2" />
+              )}
             </Button>
           </form>
         </Form>
