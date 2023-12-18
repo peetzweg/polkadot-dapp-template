@@ -1,29 +1,29 @@
 import { useQuery } from "@tanstack/react-query"
 import { useApi } from "../providers/api-provider"
-import { useKeyringStore } from "../state/keyring"
+import { useQueryCandidateState } from "./useQueryCandidateState"
 
-export const QUERY_KEY_MOB_RULE_STATE = ["proofOfInk", "candidates"]
-
-// 0. Not Applied
-// 1. Applied
-// 2. Selected
-// 3. Being Judged => check selected fields
-// 4. Proved
+export const QUERY_KEY_MOB_RULE_STATE = ["mobRule", "cases"]
 
 export const useQueryMobRuleState = () => {
   const { api } = useApi()
-  const { pair } = useKeyringStore()
+
+  const { data: candidate } = useQueryCandidateState()
 
   return useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: [...QUERY_KEY_CANDIDATE_STATE, pair?.address],
+    queryKey: [
+      ...QUERY_KEY_MOB_RULE_STATE,
+      candidate?.asSelected.judging.unwrapOrDefault(),
+    ],
     queryFn: async () => {
-      const state = await api.query.proofOfInk.candidates(pair!.address)
-      if (state.isNone) return undefined
+      const judgingId = candidate?.asSelected.judging.unwrapOrDefault()
+      if (!judgingId) throw Error("No judging available")
 
-      // TODO resolve typescript issue here, typehelper `Some<returntype typeof proofOfInk.candidates>`
-      return state.unwrap()
+      const mobRuleCase = await api.query.mobRule.cases(judgingId)
+      if (mobRuleCase.isNone) return undefined
+
+      return mobRuleCase.unwrap()
     },
-    enabled: !!pair,
+    enabled: !!candidate?.isSelected && candidate.asSelected.judging.isSome,
   })
 }

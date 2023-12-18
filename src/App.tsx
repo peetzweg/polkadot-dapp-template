@@ -7,6 +7,7 @@ import { Commit } from "./components/Commit"
 import { ConnectionIndicator } from "./components/ConnectionIndicator"
 import { Evidence } from "./components/Evidence"
 import { Faucet } from "./components/Faucet"
+import { MobRuleState } from "./components/MobRuleState"
 import { NewAccount } from "./components/NewAccount"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { RequireApi } from "./components/helpers/RequireApi"
@@ -42,6 +43,7 @@ function App() {
                   <Apply />
                   <Commit />
                   <Evidence />
+                  <MobRuleState />
 
                   {/* <ProofOfInk /> */}
                   {/* <AddDesignFamily /> */}
