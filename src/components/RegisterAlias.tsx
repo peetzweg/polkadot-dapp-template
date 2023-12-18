@@ -1,52 +1,51 @@
 import { mnemonicToEntropy } from "@polkadot/util-crypto"
-import { PersonIcon, ShadowInnerIcon } from "@radix-ui/react-icons"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { IdCardIcon, PersonIcon, ShadowInnerIcon } from "@radix-ui/react-icons"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { handleApiError } from "../lib/handleApiError.js"
 import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
-import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
 import { useVerifiable } from "../queries/useVerifiable.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
 import { Input } from "./ui/input.js"
 import { Label } from "./ui/label.js"
 
-interface RegisterProps {
+interface RegisterAliasProps {
   className?: string
 }
 
-export const Register: React.FC<RegisterProps> = ({ className }) => {
+export const RegisterAlias: React.FC<RegisterAliasProps> = ({ className }) => {
   const { api } = useApi()
   const { pair, mnemonic } = useKeyringStore()
   const queryClient = useQueryClient()
   const { verifiable, isReady } = useVerifiable()
 
-  const { data: candidate, isLoading } = useQueryCandidateState()
-
-  const { data: meMember } = useQuery({
-    queryKey: ["member", pair?.address, mnemonic],
-    queryFn: async () => {
-      return verifiable.memberFromEntropy(mnemonicToEntropy(mnemonic!))
-    },
-    enabled: isReady,
-  })
-
-  const { mutate: register, isPending } = useMutation({
-    mutationKey: ["proofOfInk", "apply", pair?.address],
-    mutationFn: () => {
-      if (!meMember) throw Error("Member not calculated")
-      const call = api.tx.proofOfInk.register(meMember)
+  const { mutate: setAlias, isPending } = useMutation({
+    mutationKey: ["people", "setAlias", pair?.address],
+    onError: (error) => console.error(error),
+    mutationFn: async () => {
+      const { proof, alias } = await verifiable.generateProof(
+        mnemonicToEntropy(mnemonic!),
+        api.createType("MembersVec", new Uint8Array()).toU8a(),
+      )
+      console.log({ proof, alias })
+      const setAlias = api.tx.people.setAliasAccount(pair!.address)
+      const call = api.tx.people.underAlias(setAlias)
 
       return new Promise((resolve, reject) => {
         call
           .signAndSend(pair!, (event) => {
             if (event.isCompleted) {
-              void queryClient.invalidateQueries({ queryKey: ["proofOfInk"] })
+              void queryClient.invalidateQueries()
               resolve(event)
             }
             if (event.isError) {
               reject(event)
             }
+            if (event.dispatchError) {
+              reject(event.dispatchError)
+            }
+            console.log({ event })
             // TODO get hold of personal ID to push to root
           })
           .catch((error) => {
@@ -62,29 +61,27 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
       className={cn(
         "relative col-span-1 flex h-full w-auto flex-col gap-4 rounded-md border p-4 md:p-6 lg:p-6",
         className,
-        {
-          "pointer-events-none opacity-25": !candidate?.isProven,
-          "outline-none ring-2 ring-ring ring-offset-2 ring-offset-background":
-            candidate?.isProven,
-        },
       )}
     >
       <>
         <div className="space-y-2">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
-            Register as Person
+            Set Alias
           </h2>
         </div>
         <div className="flex h-full flex-col  justify-center gap-4">
-          <Label>Member</Label>
-          <Input disabled value={api.createType("Member", meMember).toHex()} />
+          <Label>Account</Label>
+          <Input disabled value={pair?.address} />
 
-          <Button disabled={isPending} onClick={() => register()}>
-            Become a Person
+          <Label>Context</Label>
+          <Input disabled value="context" />
+
+          <Button disabled={isPending || !isReady} onClick={() => setAlias()}>
+            Set Account Alias
             {isPending ? (
               <ShadowInnerIcon className="ml-2 animate-spin" />
             ) : (
-              <PersonIcon className="ml-2" />
+              <IdCardIcon className="ml-2" />
             )}
           </Button>
         </div>

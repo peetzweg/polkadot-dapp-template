@@ -26,7 +26,7 @@ export const Bandersnatch: React.FC = () => {
     if (!isReady || !mnemonic) return
 
     Promise.all(
-      new Array(12)
+      new Array(0)
         .fill(1)
         .map(() => mnemonicGenerate(24))
         .map((randomMnemonic) => mnemonicToEntropy(randomMnemonic))

@@ -9,7 +9,9 @@ import { Evidence } from "./components/Evidence"
 import { Faucet } from "./components/Faucet"
 import { MobRuleState } from "./components/MobRuleState"
 import { NewAccount } from "./components/NewAccount"
+import { PeopleState } from "./components/PeopleState"
 import { Register } from "./components/Register"
+import { RegisterAlias } from "./components/RegisterAlias"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { RequireApi } from "./components/helpers/RequireApi"
 import { useKeyringStore } from "./state/keyring"
@@ -47,6 +49,8 @@ function App() {
                   <MobRuleState />
                   {/* <Intervene /> */}
                   <Register />
+                  <PeopleState />
+                  <RegisterAlias />
 
                   {/* <AddDesignFamily /> */}
                 </div>
