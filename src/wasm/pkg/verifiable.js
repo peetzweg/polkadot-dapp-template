@@ -188,8 +188,68 @@ function handleError(f, args) {
 * @param {Uint8Array} members
 * @returns {object}
 */
-export function one_shot(entropy, members) {
-    const ret = wasm.one_shot(addHeapObject(entropy), addHeapObject(members));
+export function one_shot_trivial(entropy, members) {
+    const ret = wasm.one_shot_trivial(addHeapObject(entropy), addHeapObject(members));
+    return takeObject(ret);
+}
+
+/**
+* @param {Uint8Array} entropy_input
+* @returns {Uint8Array}
+*/
+export function new_secret_trivial(entropy_input) {
+    const ret = wasm.new_secret_trivial(addHeapObject(entropy_input));
+    return takeObject(ret);
+}
+
+/**
+* @param {Uint8Array} secret_input
+* @returns {Uint8Array}
+*/
+export function member_from_secret_trivial(secret_input) {
+    const ret = wasm.member_from_secret_trivial(addHeapObject(secret_input));
+    return takeObject(ret);
+}
+
+/**
+* @param {Uint8Array} member_input
+* @param {Uint8Array} members_input
+* @returns {object}
+*/
+export function open_trivial(member_input, members_input) {
+    const ret = wasm.open_trivial(addHeapObject(member_input), addHeapObject(members_input));
+    return takeObject(ret);
+}
+
+/**
+* @param {Uint8Array} commitment
+* @param {Uint8Array} secret
+* @param {Uint8Array} context
+* @param {Uint8Array} message
+*/
+export function create_trivial(commitment, secret, context, message) {
+    wasm.create_trivial(addHeapObject(commitment), addHeapObject(secret), addHeapObject(context), addHeapObject(message));
+}
+
+/**
+* @param {Uint8Array} proof
+* @param {Uint8Array} members
+* @param {Uint8Array} context
+* @param {Uint8Array} message
+*/
+export function validate_trivial(proof, members, context, message) {
+    wasm.validate_trivial(addHeapObject(proof), addHeapObject(members), addHeapObject(context), addHeapObject(message));
+}
+
+/**
+* @param {Uint8Array} entropy
+* @param {Uint8Array} members
+* @param {Uint8Array} context
+* @param {Uint8Array} message
+* @returns {object}
+*/
+export function one_shot(entropy, members, context, message) {
+    const ret = wasm.one_shot(addHeapObject(entropy), addHeapObject(members), addHeapObject(context), addHeapObject(message));
     return takeObject(ret);
 }
 
@@ -250,64 +310,6 @@ export function open(member_input, members_input) {
 */
 export function create(commitment, secret, context, message) {
     wasm.create(addHeapObject(commitment), addHeapObject(secret), addHeapObject(context), addHeapObject(message));
-}
-
-/**
-* @param {Uint8Array} entropy
-* @param {Uint8Array} members
-* @returns {object}
-*/
-export function one_shot_trivial(entropy, members) {
-    const ret = wasm.one_shot_trivial(addHeapObject(entropy), addHeapObject(members));
-    return takeObject(ret);
-}
-
-/**
-* @param {Uint8Array} entropy_input
-* @returns {Uint8Array}
-*/
-export function new_secret_trivial(entropy_input) {
-    const ret = wasm.new_secret_trivial(addHeapObject(entropy_input));
-    return takeObject(ret);
-}
-
-/**
-* @param {Uint8Array} secret_input
-* @returns {Uint8Array}
-*/
-export function member_from_secret_trivial(secret_input) {
-    const ret = wasm.member_from_secret_trivial(addHeapObject(secret_input));
-    return takeObject(ret);
-}
-
-/**
-* @param {Uint8Array} member_input
-* @param {Uint8Array} members_input
-* @returns {object}
-*/
-export function open_trivial(member_input, members_input) {
-    const ret = wasm.open_trivial(addHeapObject(member_input), addHeapObject(members_input));
-    return takeObject(ret);
-}
-
-/**
-* @param {Uint8Array} commitment
-* @param {Uint8Array} secret
-* @param {Uint8Array} context
-* @param {Uint8Array} message
-*/
-export function create_trivial(commitment, secret, context, message) {
-    wasm.create_trivial(addHeapObject(commitment), addHeapObject(secret), addHeapObject(context), addHeapObject(message));
-}
-
-/**
-* @param {Uint8Array} proof
-* @param {Uint8Array} members
-* @param {Uint8Array} context
-* @param {Uint8Array} message
-*/
-export function validate_trivial(proof, members, context, message) {
-    wasm.validate_trivial(addHeapObject(proof), addHeapObject(members), addHeapObject(context), addHeapObject(message));
 }
 
 async function __wbg_load(module, imports) {

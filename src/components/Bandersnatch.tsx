@@ -7,11 +7,10 @@ import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
 import { Input } from "./ui/input.js"
 import { Textarea } from "./ui/textarea.js"
-import { ProofResults } from "./verifiable-worker.js"
+import { ProofResults } from "../queries/verifiable-worker.js"
 
 export const Bandersnatch: React.FC = () => {
-  // TODO how to use generated pair as entropy
-  // TODO why are the verifiable calls happening more than once
+  // TODO how to use generated pair as entropy and not mnemonic directly
   // TODO use comlinks advanced feature to transfer or just proxy certain values
 
   const { api } = useApi()
@@ -38,7 +37,8 @@ export const Bandersnatch: React.FC = () => {
         setMembers(members)
       })
       .catch((error) => {
-        console.log("Error during member creation", error)
+        console.error("Error during member creation")
+        console.error(error)
       })
   }, [api, isReady, mnemonic, verifiable])
 
@@ -48,8 +48,9 @@ export const Bandersnatch: React.FC = () => {
     verifiable
       .memberFromEntropy(entropy.toU8a())
       .then((memberMe) => setMe(memberMe))
-      .catch(() => {
-        console.log("Error during creation of member me")
+      .catch((error) => {
+        console.error("Error during creation of member me")
+        console.error(error)
       })
   }, [api, isReady, mnemonic, verifiable])
 
@@ -61,7 +62,12 @@ export const Bandersnatch: React.FC = () => {
     mutationKey: [mnemonic],
     mutationFn: () => {
       const memberVec = api.createType("MembersVec", members)
-      return verifiable.generateProof(me!, memberVec.toU8a())
+      return verifiable.generateProof(
+        me!,
+        memberVec.toU8a(),
+        Uint8Array.from([4, 3, 2, 1]),
+        Uint8Array.from([1, 2, 3, 4]),
+      )
     },
     onSuccess: () => {
       setTimeout(
@@ -76,12 +82,15 @@ export const Bandersnatch: React.FC = () => {
   })
 
   const { data: validationData, mutate: validate } = useMutation({
+    onError: (error) => {
+      console.error(error)
+    },
     mutationFn: (results: ProofResults) => {
       return verifiable.validate(
         results.proof,
         results.members,
-        results.context!,
-        results.message!,
+        results.context,
+        results.message,
       )
     },
     onSuccess: () => {

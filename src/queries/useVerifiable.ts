@@ -15,7 +15,7 @@ export const useVerifiable = () => {
       .init()
       .then(() => setReady(true))
       .catch((error) => {
-        console.log("Error during init of verifiable", error)
+        console.error("Error during init of verifiable", error)
       })
   }, [verifiable])
 
