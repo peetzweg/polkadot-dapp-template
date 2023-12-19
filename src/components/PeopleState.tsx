@@ -19,8 +19,9 @@ export const PeopleState: React.FC<PeopleStateProps> = ({ className }) => {
       <>
         <div className="flex flex-col gap-2">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
-            Valid Members
+            People Root
           </h2>
+          <code>People::root()</code>
         </div>
 
         <div>

@@ -31,8 +31,8 @@ export function APIProvider({ children, ...props }: APIProviderProps) {
   const [api, setApi] = useState<APIProviderState>(initialState)
 
   const [wsProvider, rpcURL] = useMemo(() => {
-    const urlRPC = new URLSearchParams(window.location.search).get("rpc")
-    const rpcURL = urlRPC ?? import.meta.env.VITE_DEFAULT_RPC
+    const rpcURL = import.meta.env.VITE_DEFAULT_RPC
+    if (!rpcURL) throw Error("No RPC URL provided, check ENVIRONMENT.")
     return [new WsProvider(rpcURL), rpcURL]
   }, [])
 

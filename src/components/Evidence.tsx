@@ -96,10 +96,11 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
       )}
     >
       <div className="flex h-full flex-col justify-between gap-4">
-        <div className="space-y-2">
+        <div className="flex flex-col space-y-2">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
             Submit Evidence
           </h2>
+          <code>ProofOfInk::submit_evidence(hash)</code>
         </div>
 
         <Form {...form}>

@@ -1,6 +1,7 @@
 import { mnemonicToEntropy } from "@polkadot/util-crypto"
 import { PersonIcon, ShadowInnerIcon } from "@radix-ui/react-icons"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import toast from "react-hot-toast"
 import { handleApiError } from "../lib/handleApiError.js"
 import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
@@ -18,7 +19,6 @@ interface RegisterProps {
 export const Register: React.FC<RegisterProps> = ({ className }) => {
   const { api } = useApi()
   const { pair, mnemonic } = useKeyringStore()
-  const queryClient = useQueryClient()
   const { verifiable, isReady } = useVerifiable()
 
   const { data: candidate, isLoading } = useQueryCandidateState()
@@ -32,25 +32,63 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
   })
 
   const { mutate: register, isPending } = useMutation({
-    mutationKey: ["proofOfInk", "apply", pair?.address],
+    mutationKey: ["proofOfInk", "register", pair?.address],
+    onError: handleApiError,
+    onSuccess: (data) => {
+      console.log({ data })
+      toast.success("Success!")
+    },
     mutationFn: () => {
       if (!meMember) throw Error("Member not calculated")
       const call = api.tx.proofOfInk.register(meMember)
 
       return new Promise((resolve, reject) => {
         call
-          .signAndSend(pair!, (event) => {
-            if (event.isCompleted) {
-              void queryClient.invalidateQueries({ queryKey: ["proofOfInk"] })
-              resolve(event)
-            }
-            if (event.isError) {
-              reject(event)
-            }
-            // TODO get hold of personal ID to push to root
-          })
+          .signAndSend(
+            pair!,
+            ({ status, events, dispatchError, dispatchInfo }) => {
+              if (status.isInBlock || status.isFinalized) {
+                const successEvents = events
+                  // find/filter for failed events
+                  .filter(({ event }) =>
+                    api.events.system.ExtrinsicSuccess.is(event),
+                  )
+                if (successEvents.length > 0) {
+                  resolve(successEvents)
+                }
+
+                events
+                  // find/filter for failed events
+                  .filter(({ event }) =>
+                    api.events.system.ExtrinsicFailed.is(event),
+                  )
+                  // we know that data for system.ExtrinsicFailed is
+                  // (DispatchError, DispatchInfo)
+                  .forEach(
+                    ({
+                      event: {
+                        data: [error, info],
+                      },
+                    }) => {
+                      if (error.isModule) {
+                        // for module errors, we have the section indexed, lookup
+                        const decoded = api.registry.findMetaError(
+                          error.asModule,
+                        )
+                        const { docs, method, section } = decoded
+
+                        console.log(`${section}.${method}: ${docs.join(" ")}`)
+                        reject(`${section}.${method}: ${docs.join(" ")}`)
+                      } else {
+                        // Other, CannotLookup, BadOrigin, no extra info
+                        console.log(error.toString())
+                      }
+                    },
+                  )
+              }
+            },
+          )
           .catch((error) => {
-            handleApiError(error)
             reject(error)
           })
       })
@@ -70,10 +108,13 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
       )}
     >
       <>
-        <div className="space-y-2">
+        <div className="flex flex-col space-y-2">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
             Register as Person
           </h2>
+          <code className="break-words">
+            ProofOfInk::register(GenerateVerifiable::member_from_secret())
+          </code>
         </div>
         <div className="flex h-full flex-col  justify-center gap-4">
           <Label>Member</Label>

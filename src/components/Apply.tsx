@@ -60,10 +60,11 @@ export const Apply: React.FC<ApplyProps> = ({ className }) => {
       )}
     >
       <>
-        <div className="space-y-2">
+        <div className="flex flex-col space-y-2">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
             Apply for Citizenship
           </h2>
+          <code>ProofOfInk::apply()</code>
         </div>
         <div className="flex h-full flex-col  justify-center gap-4">
           <Button variant={"secondary"} disabled>

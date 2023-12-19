@@ -96,10 +96,11 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
       )}
     >
       <div className="flex h-full flex-col justify-between">
-        <div className="space-y-2">
+        <div className="flex flex-col space-y-2">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
             Commit to a Tattoo
           </h2>
+          <code>ProofOfInk::commit(choice)</code>
         </div>
 
         <Form {...form}>

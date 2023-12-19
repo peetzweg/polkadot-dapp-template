@@ -21,6 +21,7 @@ interface KeyringState {
 type WholeState = KeyringState
 
 export const useKeyringStore = create<WholeState>((set, get): KeyringState => {
+  // todo ss58 prefix probably not correct!
   const keyring = new Keyring({ type: "sr25519", ss58Format: 0 })
   return {
     keyring,

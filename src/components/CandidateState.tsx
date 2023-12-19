@@ -25,13 +25,16 @@ export const CandidateState: React.FC<CandidateStateProps> = ({
       )}
     >
       <>
-        <div className="flex flex-row items-center justify-between ">
-          <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
-            Candidate State
-          </h2>
-          <Button variant={"ghost"} onClick={() => setRaw((prev) => !prev)}>
-            Show Raw
-          </Button>
+        <div className="flex flex-col space-y-2">
+          <div className="flex flex-row items-center justify-between ">
+            <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
+              Candidate State
+            </h2>
+            <Button variant={"ghost"} onClick={() => setRaw((prev) => !prev)}>
+              Show Raw
+            </Button>
+          </div>
+          <code>ProofOfInk::candidates(pubKey)</code>
         </div>
 
         {showRaw ? (

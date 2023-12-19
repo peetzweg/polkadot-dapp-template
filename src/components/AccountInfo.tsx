@@ -39,7 +39,7 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ className }) => {
             {pair.meta.name}
           </h2>
           <p className="mt-1 break-all font-mono text-sm text-gray-500">
-            {pair.address}
+            {api.createType("AccountId32", pair.address).toString()}
           </p>
         </div>
 

@@ -29,11 +29,15 @@ interface FaucetProps {
 
 export const Faucet: React.FC<FaucetProps> = ({ className }) => {
   const { api, decimals, symbol } = useApi()
-  const { keyring } = useKeyringStore()
+  const { keyring, pair: currentPair } = useKeyringStore()
   const queryClient = useQueryClient()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      value: "0.05",
+      receiver: currentPair?.address,
+    },
   })
 
   const pair = useMemo(() => {
@@ -89,7 +93,7 @@ export const Faucet: React.FC<FaucetProps> = ({ className }) => {
       <>
         <div className="flex flex-row justify-between">
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
-            Faucet (Alice){" "}
+            Faucet (Alice)
           </h2>
           <h2 className="font-mono text-xl font-extrabold leading-6 tracking-tight">
             {data
@@ -121,6 +125,7 @@ export const Faucet: React.FC<FaucetProps> = ({ className }) => {
                         className="text-right font-mono tabular-nums"
                         placeholder="0.10"
                         {...field}
+                        disabled
                       />
                     </FormControl>
                     <Button
@@ -150,9 +155,10 @@ export const Faucet: React.FC<FaucetProps> = ({ className }) => {
                     <Input
                       autoCapitalize="off"
                       autoComplete="off"
-                      placeholder="Destination"
+                      placeholder="Receiver"
                       className="font-mono"
                       {...field}
+                      disabled
                     />
                   </FormControl>
 

@@ -6,7 +6,9 @@ import { useApi } from "../providers/api-provider.js"
 import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
-
+import "@polkadot/api-augment"
+import "@polkadot/api-base"
+import { ApiPromise, WsProvider } from "@polkadot/api"
 interface InterveneProps {
   className?: string
 }
@@ -20,7 +22,19 @@ export const Intervene: React.FC<InterveneProps> = ({ className }) => {
 
   const { mutate: apply, isPending } = useMutation({
     mutationKey: ["proofOfInk", "apply", pair?.address],
-    mutationFn: () => {
+    mutationFn: async () => {
+      const apiRelay = await ApiPromise.create({
+        provider: new WsProvider("wss://rpc.polkadot.io"),
+      })
+
+      type MyArgs = Parameters<typeof apiRelay.tx.polkadotXcm.send>
+
+      const dest: MyArgs[0] = "hello",
+
+      apiRelay.tx.polkadotXcm.send({
+        type: "V3",
+      })
+
       const applyCall = api.tx.proofOfInk.apply()
 
       // TODO craft XCM call here

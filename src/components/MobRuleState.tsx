@@ -38,6 +38,7 @@ export const MobRuleState: React.FC<MobRuleStateProps> = ({ className }) => {
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
             Mob Rule Case
           </h2>
+          <code>MobRule::cases(case_no)</code>
           {judgingId && <code>{`Case: ${judgingId}`}</code>}
         </div>
 
