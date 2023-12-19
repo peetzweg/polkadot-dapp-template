@@ -47,6 +47,8 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
           .signAndSend(
             pair!,
             ({ status, events, dispatchError, dispatchInfo }) => {
+              if (dispatchError) reject(dispatchError)
+
               if (status.isInBlock || status.isFinalized) {
                 const successEvents = events
                   // find/filter for failed events
@@ -80,8 +82,7 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
                         console.log(`${section}.${method}: ${docs.join(" ")}`)
                         reject(`${section}.${method}: ${docs.join(" ")}`)
                       } else {
-                        // Other, CannotLookup, BadOrigin, no extra info
-                        console.log(error.toString())
+                        reject(error)
                       }
                     },
                   )
