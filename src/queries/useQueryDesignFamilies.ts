@@ -1,21 +1,21 @@
 import { useQuery } from "@tanstack/react-query"
 import { useApi } from "../providers/api-provider"
-import { useKeyringStore } from "../state/keyring"
 
-export const QUERY_KEY_CANDIDATE_STATE = ["proofOfInk", "designFamilies"]
+export const QUERY_KEY = ["proofOfInk", "designFamilies"]
 
 export const useQueryDesignFamilies = () => {
   const { api } = useApi()
-  const { pair } = useKeyringStore()
 
   return useQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: [...QUERY_KEY_CANDIDATE_STATE, pair?.address],
+    queryKey: [...QUERY_KEY],
     queryFn: async () => {
-      const designs = await api.query.proofOfInk.designFamilies(null)
+      const rawDesignEntries =
+        await api.query.proofOfInk.designFamilies.entries()
+      const designs = rawDesignEntries.map(([_, value]) => {
+        return value.unwrap()
+      })
 
-      return designs.toPrimitive()
+      return designs
     },
-    enabled: !!pair,
   })
 }
