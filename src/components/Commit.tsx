@@ -15,6 +15,7 @@ import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form"
 import { Input } from "./ui/input.js"
+import { useQueryDesignFamilies } from "../queries/useQueryDesignFamilies.js"
 
 interface CommitProps {
   className?: string
@@ -45,7 +46,7 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
   })
 
   const { data: candidate } = useQueryCandidateState()
-  // TODO const { data: designs, isLoading } = useQueryDesignFamilies()
+  const { data: designs, isLoading } = useQueryDesignFamilies()
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     ({ family, index }) => {
@@ -103,71 +104,75 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
           <code>ProofOfInk::commit(choice)</code>
         </div>
 
-        <Form {...form}>
-          <form
-            // TODO type error of react-hook-forms?
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="mt-4 flex h-full flex-col justify-center gap-4"
-          >
-            <div className="flex flex-row items-center justify-center gap-2">
-              <FormField
-                control={form.control}
-                name="family"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        autoCapitalize="off"
-                        autoComplete="off"
-                        className="text-right font-mono tabular-nums"
-                        placeholder="Family"
-                        disabled
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <div>/</div>
-              <FormField
-                control={form.control}
-                name="index"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        autoCapitalize="off"
-                        autoComplete="off"
-                        placeholder="Index"
-                        className="font-mono"
-                        {...field}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <Button
-              type="submit"
-              disabled={
-                form.formState.isLoading ||
-                !form.formState.isValid ||
-                form.formState.isSubmitting
-              }
+        {isLoading ? null : designs === undefined ? (
+          "No designs available yet"
+        ) : (
+          <Form {...form}>
+            <form
+              // TODO type error of react-hook-forms?
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="mt-4 flex h-full flex-col justify-center gap-4"
             >
-              Commit{" "}
-              {form.formState.isSubmitting ? (
-                <ShadowInnerIcon className="ml-2 animate-spin" />
-              ) : (
-                <BlendingModeIcon className="ml-2" />
-              )}
-            </Button>
-          </form>
-        </Form>
+              <div className="flex flex-row items-center justify-center gap-2">
+                <FormField
+                  control={form.control}
+                  name="family"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          autoCapitalize="off"
+                          autoComplete="off"
+                          className="text-right font-mono tabular-nums"
+                          placeholder="Family"
+                          disabled
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <div>/</div>
+                <FormField
+                  control={form.control}
+                  name="index"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          autoCapitalize="off"
+                          autoComplete="off"
+                          placeholder="Index"
+                          className="font-mono"
+                          {...field}
+                        />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={
+                  form.formState.isLoading ||
+                  !form.formState.isValid ||
+                  form.formState.isSubmitting
+                }
+              >
+                Commit{" "}
+                {form.formState.isSubmitting ? (
+                  <ShadowInnerIcon className="ml-2 animate-spin" />
+                ) : (
+                  <BlendingModeIcon className="ml-2" />
+                )}
+              </Button>
+            </form>
+          </Form>
+        )}
       </div>
     </div>
   )
