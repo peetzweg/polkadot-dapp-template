@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query"
 import { formatBalance } from "../lib/formatBalance.js"
+import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
+import { useQueryAccount } from "../queries/useQueryAccount.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
 import { Textarea } from "./ui/textarea.js"
-import { cn } from "../lib/utils.js"
 
 interface AccountInfoProps {
   className?: string
@@ -14,15 +14,7 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({ className }) => {
   const { api, decimals } = useApi()
   const { pair, mnemonic, clear } = useKeyringStore()
 
-  const { data } = useQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: ["system.account", pair?.address],
-    queryFn: async () => {
-      return (await api.query.system.account(pair!.address)).data
-    },
-    staleTime: 2000,
-    enabled: !!pair,
-  })
+  const { data } = useQueryAccount(pair?.address)
 
   if (!pair) return null
 
