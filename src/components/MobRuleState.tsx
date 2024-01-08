@@ -3,12 +3,14 @@ import { cn } from "../lib/utils.js"
 import { useQueryMobRuleState } from "../queries/useQueryMobRuleState.js"
 import { Textarea } from "./ui/textarea.js"
 import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
+import { useApi } from "../providers/api-provider.js"
 
 interface MobRuleStateProps {
   className?: string
 }
 
 export const MobRuleState: React.FC<MobRuleStateProps> = ({ className }) => {
+  const { api } = useApi()
   const { data: candidate } = useQueryCandidateState()
   const { data: mobRuleCase } = useQueryMobRuleState()
 
@@ -20,6 +22,13 @@ export const MobRuleState: React.FC<MobRuleStateProps> = ({ className }) => {
   const { active, done } = useMemo(() => {
     return { active: mobRuleCase?.isOpen, done: mobRuleCase?.isDone }
   }, [mobRuleCase])
+
+  const interveneCall = useMemo(() => {
+    if (judgingId === undefined) return undefined
+    return api.tx.mobRule
+      .intervene(judgingId, { Truth: "ConfidentTrue" })
+      .toHex()
+  }, [api.tx.mobRule, judgingId])
 
   return (
     <div
@@ -40,6 +49,7 @@ export const MobRuleState: React.FC<MobRuleStateProps> = ({ className }) => {
           </h2>
           <code>MobRule::cases(case_no)</code>
           {judgingId && <code>{`Case: ${judgingId}`}</code>}
+          {interveneCall && <code>{`Intervene: ${interveneCall}`}</code>}
         </div>
 
         {!mobRuleCase ? (
