@@ -23,11 +23,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@polkadot/api/augment": ["./src/interfaces/augment-api.ts"],
-      "@polkadot/types/augment": ["./src/interfaces/augment-types.ts"]
+      // this is the package name we use (in the interface imports, --package for generators)
+      "people-typegen/*": ["src/*"],
     }
   },
   "include": ["src"],
-
   "references": [{ "path": "./tsconfig.node.json" }]
 }
