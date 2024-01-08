@@ -4,18 +4,18 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import * as z from "zod"
-import { handleApiError } from "../lib/handleApiError.js"
+import { useExtrinsic } from "../lib/useExtrinsic.js"
 import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
 import {
-  QUERY_KEY_CANDIDATE_STATE,
+  QUERY_KEY as QUERY_KEY_CANDIDATE_STATE,
   useQueryCandidateState,
 } from "../queries/useQueryCandidateState.js"
+import { useQueryDesignFamilies } from "../queries/useQueryDesignFamilies.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form"
 import { Input } from "./ui/input.js"
-import { useQueryDesignFamilies } from "../queries/useQueryDesignFamilies.js"
 
 interface CommitProps {
   className?: string
@@ -36,7 +36,6 @@ const formSchema = z.object({
 
 export const Commit: React.FC<CommitProps> = ({ className }) => {
   const { api } = useApi()
-  const { pair } = useKeyringStore()
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,34 +46,19 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
 
   const { data: candidate } = useQueryCandidateState()
   const { data: designs, isLoading } = useQueryDesignFamilies()
+  const { mutateAsync: commit } = useExtrinsic(api.tx.proofOfInk.commit)
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     ({ family, index }) => {
-      const call = api.tx.proofOfInk.commit(
-        { Procedural: [3, Number(index)] },
-        null,
-      )
-
-      return new Promise((resolve, reject) => {
-        call
-          .signAndSend(pair!, (event) => {
-            if (event.isCompleted) {
-              resolve(event)
-              void queryClient.invalidateQueries({
-                queryKey: QUERY_KEY_CANDIDATE_STATE,
-              })
-            }
-            if (event.isError) {
-              reject(event)
-            }
+      return commit([{ Procedural: [3, Number(index)] }, null], {
+        onSuccess: () => {
+          void queryClient.invalidateQueries({
+            queryKey: QUERY_KEY_CANDIDATE_STATE,
           })
-          .catch((error) => {
-            handleApiError(error)
-            reject(error)
-          })
+        },
       })
     },
-    [api.tx.proofOfInk, pair, queryClient],
+    [commit, queryClient],
   )
 
   const { active, done } = useMemo(() => {

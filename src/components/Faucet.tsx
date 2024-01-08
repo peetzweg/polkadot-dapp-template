@@ -1,22 +1,32 @@
+/* eslint-disable no-console */
 import { Pencil1Icon, ShadowInnerIcon } from "@radix-ui/react-icons"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { useMemo } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { SubmitHandler } from "react-hook-form"
 import { formatBalance } from "../lib/formatBalance.js"
 import { useApi } from "../providers/api-provider.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form"
-import { Input } from "./ui/input"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "./ui/form.js"
+import { Input } from "./ui/input.js"
 
 import * as z from "zod"
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowDownIcon } from "@radix-ui/react-icons"
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 import { useForm } from "react-hook-form"
-import { cn } from "../lib/utils"
-import { handleApiError } from "../lib/handleApiError.js"
+import { useExtrinsicAs } from "../lib/useExtrinsic.js"
+import { cn } from "../lib/utils.js"
+import {
+  QUERY_KEY as ACCOUNT_QUERY_KEY,
+  useQueryAccount,
+} from "../queries/useQueryAccount.js"
 
 const formSchema = z.object({
   receiver: z.string().min(2).max(50),
@@ -40,48 +50,35 @@ export const Faucet: React.FC<FaucetProps> = ({ className }) => {
     },
   })
 
-  const pair = useMemo(() => {
+  const aliceKeyPair = useMemo(() => {
     return keyring.createFromUri("//Alice")
   }, [keyring])
 
-  const { data } = useQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: ["system.account", pair?.address],
-    queryFn: async () => {
-      return (await api.query.system.account(pair.address)).data
-    },
-    enabled: !!pair,
-  })
+  const { data } = useQueryAccount(aliceKeyPair.address)
+
+  const { mutateAsync: transfer } = useExtrinsicAs(
+    api.tx.balances.transferAllowDeath,
+    aliceKeyPair,
+  )
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     async ({ receiver, value }) => {
       // TODO! unsave scaling, can overflow and not work with to many decimals
       const scaledValue = Number(value) * 10 ** decimals
-      return new Promise((resolve, reject) => {
-        api.tx.balances
-          .transferAllowDeath(receiver, scaledValue)
-          .signAndSend(pair, (event) => {
-            if (event.isCompleted) {
-              resolve(event)
-              void queryClient.invalidateQueries({
-                queryKey: ["system.account"],
-              })
-            }
-            if (event.isError) {
-              reject(event)
-            }
+
+      return transfer([receiver, scaledValue], {
+        onSuccess: () => {
+          void queryClient.invalidateQueries({
+            queryKey: ACCOUNT_QUERY_KEY,
           })
-          .catch((error) => {
-            handleApiError(error)
-            reject(error)
-          })
+        },
       })
     },
 
-    [decimals, api.tx.balances, pair, queryClient],
+    [decimals, queryClient, transfer],
   )
 
-  if (!pair) return null
+  if (!currentPair) return null
 
   return (
     <div

@@ -530,7 +530,7 @@
     rxjs "^7.8.1"
     tslib "^2.6.2"
 
-"@polkadot/rpc-core@10.11.2":
+"@polkadot/rpc-core@10.11.2", "@polkadot/rpc-core@^10.11.2":
   version "10.11.2"
   resolved "https://registry.yarnpkg.com/@polkadot/rpc-core/-/rpc-core-10.11.2.tgz#a63ef288133d32abfeff8e80a94d3787e91e87be"
   integrity sha512-Ot0CFLWx8sZhLZog20WDuniPA01Bk2StNDsdAQgcFKPwZw6ShPaZQCHuKLQK6I6DodOrem9FXX7c1hvoKJP5Ww==

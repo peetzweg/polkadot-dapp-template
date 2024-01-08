@@ -4,14 +4,14 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import * as z from "zod"
-import { handleApiError } from "../lib/handleApiError.js"
+import { useExtrinsic } from "../lib/useExtrinsic.js"
 import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
 import {
-  QUERY_KEY_CANDIDATE_STATE,
+  QUERY_KEY as QUERY_KEY_CANDIDATE_STATE,
   useQueryCandidateState,
 } from "../queries/useQueryCandidateState.js"
-import { useKeyringStore } from "../state/keyring.js"
+
 import { Button } from "./ui/button.js"
 import {
   Form,
@@ -32,43 +32,33 @@ const formSchema = z.object({
 
 export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
   const { api } = useApi()
-  const { pair } = useKeyringStore()
+
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
 
   const { data: candidate } = useQueryCandidateState()
+  const { mutateAsync: submitEvidence } = useExtrinsic(
+    api.tx.proofOfInk.submitEvidence,
+  )
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     ({ evidence }) => {
-      console.log({ evidence })
-      const call = api.tx.proofOfInk.submitEvidence(
-        "0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF",
-      )
+      // eslint-disable-next-line no-console
+      console.log({ uploaded: evidence })
+      const DEADBEEF =
+        "0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF"
 
-      return new Promise((resolve, reject) => {
-        call
-          .signAndSend(pair!, (event) => {
-            if (event.isCompleted) {
-              resolve(event)
-              void queryClient.invalidateQueries({
-                queryKey: QUERY_KEY_CANDIDATE_STATE,
-              })
-            }
-            if (event.isError) {
-              reject(event)
-            }
-            // TODO event which informs me about case id
-            console.log({ event })
+      return submitEvidence([DEADBEEF], {
+        onSuccess: () => {
+          void queryClient.invalidateQueries({
+            queryKey: QUERY_KEY_CANDIDATE_STATE,
           })
-          .catch((error) => {
-            handleApiError(error)
-            reject(error)
-          })
+        },
       })
     },
-    [api.tx.proofOfInk, pair, queryClient],
+    [queryClient, submitEvidence],
   )
 
   const { active, done } = useMemo(() => {
