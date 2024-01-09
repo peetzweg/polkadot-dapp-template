@@ -18,9 +18,10 @@ interface KeyringState {
   restore: () => boolean
 }
 
-type WholeState = KeyringState
-
-export const useKeyringStore = create<WholeState>((set, get): KeyringState => {
+export const useKeyringStore = create<KeyringState>()((
+  set,
+  get,
+): KeyringState => {
   // todo ss58 prefix probably not correct!
   const keyring = new Keyring({ type: "sr25519", ss58Format: 0 })
   return {
@@ -42,7 +43,7 @@ export const useKeyringStore = create<WholeState>((set, get): KeyringState => {
         ),
       })
     },
-    create: (name: string, derivation = "Alice") => {
+    create: (name, derivation = "Alice") => {
       const freshMnemonic = mnemonicGenerate(24)
 
       set({

@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ShadowInnerIcon, UploadIcon } from "@radix-ui/react-icons"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import * as z from "zod"
@@ -12,6 +12,7 @@ import {
   useQueryCandidateState,
 } from "../queries/useQueryCandidateState.js"
 
+import { useChain } from "../state/chains.js"
 import { Button } from "./ui/button.js"
 import {
   Form,
@@ -22,6 +23,8 @@ import {
 } from "./ui/form.js"
 import { Input } from "./ui/input.js"
 
+import "../interfaces/bulletin/augment-api.js"
+// import "../interfaces/bulletin/augment-types"
 interface EvidenceProps {
   className?: string
 }
@@ -32,6 +35,7 @@ const formSchema = z.object({
 
 export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
   const { api } = useApi()
+  const { Bulletin } = useChain()
 
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,6 +43,13 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
   })
 
   const { data: candidate } = useQueryCandidateState()
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["Bulletin", "getBulletin"],
+    queryFn: () => Bulletin.query.transactionStorage.authorizations.entries(),
+  })
+  console.log({ data, isLoading })
+
   const { mutateAsync: submitEvidence } = useExtrinsic(
     api.tx.proofOfInk.submitEvidence,
   )

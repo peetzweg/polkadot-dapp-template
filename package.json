@@ -9,10 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prettier": "prettier . --write",
     "preview": "vite preview",
-    "typegen": "yarn generate:defs && yarn generate:meta",
-    "generate:defs": "node --experimental-specifier-resolution=node --loader ts-node/esm node_modules/.bin/polkadot-types-from-defs --package  people-typegen/interfaces --input ./src/interfaces --endpoint ./people.json",
-    "generate:meta": "node --experimental-specifier-resolution=node --loader ts-node/esm node_modules/.bin/polkadot-types-from-chain --package people-typegen/interfaces --endpoint ./people.json --output ./src/interfaces",
-    "metadata:people": "curl -H \"Content-Type: application/json\" -d '{\"id\":\"1\", \"jsonrpc\":\"2.0\", \"method\": \"state_getMetadata\", \"params\":[]}' https://pop-testnet.parity-lab.parity.io:443/9910 > people.json"
+    "metadata:people": "./typegen.sh people https://pop-testnet.parity-lab.parity.io:443/9910",
+    "metadata:bulletin": "./typegen.sh bulletin https://pop-testnet.parity-lab.parity.io:443/10000"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -21,6 +19,7 @@
     "@polkadot/extension-dapp": "^0.46.6",
     "@polkadot/keyring": "^12.6.2",
     "@polkadot/rpc-core": "^10.11.2",
+    "@polkadot/util": "^12.6.2",
     "@polkadot/util-crypto": "^12.6.2",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-hover-card": "^1.0.7",

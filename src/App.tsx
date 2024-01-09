@@ -3,6 +3,7 @@ import { AccountInfo } from "./components/AccountInfo"
 import { Apply } from "./components/Apply"
 import { Bandersnatch } from "./components/Bandersnatch"
 import { CandidateState } from "./components/CandidateState"
+import { ChainStatus } from "./components/ChainStatus"
 import { Commit } from "./components/Commit"
 import { ConnectionIndicator } from "./components/ConnectionIndicator"
 import { Evidence } from "./components/Evidence"
@@ -40,6 +41,7 @@ function App() {
             {pair && (
               <div className="flex flex-col gap-4 px-4 py-2">
                 <div className="auto-rows grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <ChainStatus />
                   <Faucet />
                   <AccountInfo />
                   <CandidateState />
