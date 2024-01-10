@@ -1,8 +1,8 @@
 import { mnemonicToEntropy } from "@polkadot/util-crypto"
 import { PersonIcon, ShadowInnerIcon } from "@radix-ui/react-icons"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import toast from "react-hot-toast"
-import { handleApiError } from "../lib/handleApiError.js"
+import { useQuery } from "@tanstack/react-query"
+import { useCallback } from "react"
+import { useExtrinsic } from "../lib/useExtrinsic.js"
 import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
 import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
@@ -21,7 +21,7 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
   const { pair, mnemonic } = useKeyringStore()
   const { verifiable, isReady } = useVerifiable()
 
-  const { data: candidate, isLoading } = useQueryCandidateState()
+  const { data: candidate } = useQueryCandidateState()
 
   const { data: meMember } = useQuery({
     queryKey: ["member", pair?.address, mnemonic],
@@ -31,70 +31,14 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
     enabled: isReady,
   })
 
-  const { mutate: register, isPending } = useMutation({
-    mutationKey: ["proofOfInk", "register", pair?.address],
-    onError: handleApiError,
-    onSuccess: (data) => {
-      console.log({ data })
-      toast.success("Success!")
-    },
-    mutationFn: () => {
-      if (!meMember) throw Error("Member not calculated")
-      const call = api.tx.proofOfInk.register(meMember)
+  const { mutateAsync: register, isPending } = useExtrinsic(
+    api.tx.proofOfInk.register,
+  )
 
-      return new Promise((resolve, reject) => {
-        call
-          .signAndSend(
-            pair!,
-            ({ status, events, dispatchError, dispatchInfo }) => {
-              if (dispatchError) reject(dispatchError)
-
-              if (status.isInBlock || status.isFinalized) {
-                const successEvents = events
-                  // find/filter for failed events
-                  .filter(({ event }) =>
-                    api.events.system.ExtrinsicSuccess.is(event),
-                  )
-                if (successEvents.length > 0) {
-                  resolve(successEvents)
-                }
-
-                events
-                  // find/filter for failed events
-                  .filter(({ event }) =>
-                    api.events.system.ExtrinsicFailed.is(event),
-                  )
-                  // we know that data for system.ExtrinsicFailed is
-                  // (DispatchError, DispatchInfo)
-                  .forEach(
-                    ({
-                      event: {
-                        data: [error, info],
-                      },
-                    }) => {
-                      if (error.isModule) {
-                        // for module errors, we have the section indexed, lookup
-                        const decoded = api.registry.findMetaError(
-                          error.asModule,
-                        )
-                        const { docs, method, section } = decoded
-
-                        console.log(`${section}.${method}: ${docs.join(" ")}`)
-                        reject(`${section}.${method}: ${docs.join(" ")}`)
-                      } else {
-                        reject(error)
-                      }
-                    },
-                  )
-              }
-            },
-          )
-          .catch((error) => {
-            reject(error)
-          })
-      })
-    },
-  })
+  const onClick = useCallback(() => {
+    if (!meMember) return
+    register([meMember])
+  }, [meMember, register])
 
   return (
     <div
@@ -121,7 +65,7 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
           <Label>Member</Label>
           <Input disabled value={api.createType("Member", meMember).toHex()} />
 
-          <Button disabled={isPending} onClick={() => register()}>
+          <Button disabled={isPending} onClick={onClick}>
             Become a Person
             {isPending ? (
               <ShadowInnerIcon className="ml-2 animate-spin" />
