@@ -4,6 +4,7 @@ import { useQueryMobRuleState } from "../queries/useQueryMobRuleState.js"
 import { Textarea } from "./ui/textarea.js"
 import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
 import { useApi } from "../providers/api-provider.js"
+import { u8aToHex } from "@polkadot/util"
 
 interface MobRuleStateProps {
   className?: string
@@ -25,9 +26,9 @@ export const MobRuleState: React.FC<MobRuleStateProps> = ({ className }) => {
 
   const interveneCall = useMemo(() => {
     if (judgingId === undefined) return undefined
-    return api.tx.mobRule
-      .intervene(judgingId, { Truth: "ConfidentTrue" })
-      .toHex()
+    return u8aToHex(
+      api.tx.mobRule.intervene(judgingId, { Truth: "ConfidentTrue" }).toU8a(),
+    )
   }, [api.tx.mobRule, judgingId])
 
   return (
