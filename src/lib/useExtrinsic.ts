@@ -44,8 +44,9 @@ export const useExtrinsicAs = <
       toast.error(JSON.stringify(error.message))
       console.log("error", error)
     },
-    mutationFn: (args) => {
+    mutationFn: (args): Promise<void> => {
       const call = extrinsicFn(...args)
+
       return new Promise((resolve, reject) => {
         call
           .signAndSend(addressOrPair, ({ status, events, dispatchError }) => {
