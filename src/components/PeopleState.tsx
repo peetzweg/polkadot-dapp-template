@@ -1,6 +1,5 @@
 import { cn } from "../lib/utils.js"
-import { useQueryPeopleState } from "../queries/useQueryPeopleState.js"
-import { useChain } from "../state/chains.js"
+import { useQueryRootMembers } from "../queries/useQueryRootMembers.js"
 import { Textarea } from "./ui/textarea.js"
 
 interface PeopleStateProps {
@@ -8,7 +7,7 @@ interface PeopleStateProps {
 }
 
 export const PeopleState: React.FC<PeopleStateProps> = ({ className }) => {
-  const { data: root } = useQueryPeopleState()
+  const { data: members } = useQueryRootMembers()
 
   return (
     <div
@@ -29,7 +28,7 @@ export const PeopleState: React.FC<PeopleStateProps> = ({ className }) => {
           <Textarea
             disabled
             rows={5}
-            value={JSON.stringify(root, undefined, 2)}
+            value={JSON.stringify(members, undefined, 2)}
           />
         </div>
       </>
