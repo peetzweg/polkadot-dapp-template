@@ -9,6 +9,9 @@ import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
 import { blake2AsU8a } from "@polkadot/util-crypto"
 import { u8aToHex } from "@polkadot/util"
+import "../interfaces/bulletin/augment-api.ts"
+import "../interfaces/bulletin/augment-types.ts"
+
 import {
   QUERY_KEY as QUERY_KEY_CANDIDATE_STATE,
   useQueryCandidateState,
@@ -25,9 +28,8 @@ import {
 } from "./ui/form.js"
 import { Input } from "./ui/input.js"
 import { AspectRatio } from "./ui/aspect-ratio.js"
+import { useQueryStorageAuthorizations } from "../queries/useQueryAuthorizations.ts"
 
-// import "../interfaces/bulletin/augment-api.js"
-// import "../interfaces/bulletin/augment-types"
 interface EvidenceProps {
   className?: string
 }
@@ -40,6 +42,7 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
   const { api } = useApi()
   const { Bulletin } = useChain()
   const [file, setFile] = useState<File | undefined>(undefined)
+  const [hash, setHash] = useState<string | undefined>(undefined)
 
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,15 +50,12 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
   })
 
   const { data: candidate } = useQueryCandidateState()
+  const { data: authorizations } = useQueryStorageAuthorizations()
+  console.log({ authorizations })
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["Bulletin", "getBulletin"],
-    queryFn: () => {
-      return Bulletin.query.transactionStorage.authorizations.entries()
-    },
-  })
-  console.log({ data, isLoading })
-
+  const { mutateAsync: store } = useExtrinsic(
+    Bulletin.api.tx.transactionStorage.store,
+  )
   const { mutateAsync: submitEvidence } = useExtrinsic(
     api.tx.proofOfInk.submitEvidence,
   )
@@ -72,16 +72,16 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
         throw new Error("File too large")
       }
 
-      console.log({ evidence: evidence[0], type: evidence[0].type })
-
       // Task: get blake2 of file
       const buffer = await evidence[0].arrayBuffer()
       const bytes = new Uint8Array(buffer)
 
       // TODO: maybe this needs to be done in a service worker for bigger files?
       const blake2HashOfFile = u8aToHex(blake2AsU8a(bytes))
+      setHash(blake2HashOfFile)
 
       // Task: Submit evidence bytes to bulletin chain
+      await store([bytes])
 
       // Task: submit hash of evidence to ProofOfInk
       return submitEvidence([blake2HashOfFile], {
@@ -92,13 +92,14 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
         },
       })
     },
-    [queryClient, submitEvidence],
+    [queryClient, store, submitEvidence],
   )
 
   const onChange = useCallback((event: React.FormEvent<HTMLInputElement>) => {
     const files = event.currentTarget.files
     if (files?.[0]) {
       setFile(files[0])
+      setHash(undefined)
     }
   }, [])
 
@@ -135,19 +136,24 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
         </div>
 
         {file && (
-          <AspectRatio
-            ratio={1 / 1}
-            className="flex items-center justify-center overflow-hidden"
-          >
-            <img src={URL.createObjectURL(file)} />
-          </AspectRatio>
+          <>
+            <AspectRatio
+              ratio={1 / 1}
+              className="flex items-center justify-center overflow-hidden"
+            >
+              <img src={URL.createObjectURL(file)} />
+            </AspectRatio>
+            <code>{(file.size / 1_000_000).toFixed(2)} MB</code>
+          </>
         )}
+
+        {hash && <code className="break-words">{hash}</code>}
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
-          <input
+          <Input
             {...form.register("evidence")}
             onChange={onChange}
             accept="image/*"
@@ -175,11 +181,11 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
             </div> */}
           <Button
             type="submit"
-            // disabled={
-            //   form.formState.isLoading ||
-            //   !form.formState.isValid ||
-            //   form.formState.isSubmitting
-            // }
+            disabled={
+              form.formState.isLoading ||
+              !form.formState.isValid ||
+              form.formState.isSubmitting
+            }
           >
             Submit{" "}
             {form.formState.isSubmitting ? (
