@@ -10,6 +10,7 @@ import type { Data } from '@polkadot/types';
 import type { Bytes, Compact, Option, U8aFixed, Vec, bool, u128, u16, u32, u64 } from '@polkadot/types-codec';
 import type { AnyNumber, IMethod, ITuple } from '@polkadot/types-codec/types';
 import type { AccountId32, Call, H256, MultiAddress } from '@polkadot/types/interfaces/runtime';
+import type { CumulusPrimitivesCoreAggregateMessageOrigin, CumulusPrimitivesParachainInherentParachainInherentData, FrameSupportRealityJudgement, PalletIdentityJudgement, PalletMultisigTimepoint, PalletProofOfInkFamilyKind, PalletProofOfInkInkChoice, PeopleRococoRuntimeOriginCaller, PeopleRococoRuntimePeopleIdentityInfo, PeopleRococoRuntimeSessionKeys, SpWeightsWeightV2Weight, StagingXcmV3MultiLocation, XcmV3WeightLimit, XcmVersionedMultiAssets, XcmVersionedMultiLocation, XcmVersionedXcm } from '@polkadot/types/lookup';
 
 export type __AugmentedSubmittable = AugmentedSubmittable<() => unknown>;
 export type __SubmittableExtrinsic<ApiType extends ApiTypes> = SubmittableExtrinsic<ApiType>;
@@ -277,7 +278,7 @@ declare module '@polkadot/api-base/types/submittable' {
       /**
        * See [`Pallet::migrate_key`].
        **/
-      migrateKey: AugmentedSubmittable<(updated: ArkScale | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [ArkScale]>;
+      migrateKey: AugmentedSubmittable<(updated: Bytes | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [Bytes]>;
       /**
        * See [`Pallet::push_member`].
        **/
@@ -286,6 +287,10 @@ declare module '@polkadot/api-base/types/submittable' {
        * See [`Pallet::refresh_root`].
        **/
       refreshRoot: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>, []>;
+      /**
+       * See [`Pallet::reset_root`].
+       **/
+      resetRoot: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>, []>;
       /**
        * See [`Pallet::set_alias_account`].
        **/
@@ -401,7 +406,7 @@ declare module '@polkadot/api-base/types/submittable' {
       /**
        * See [`Pallet::register`].
        **/
-      register: AugmentedSubmittable<(key: ArkScale | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [ArkScale]>;
+      register: AugmentedSubmittable<(key: Bytes | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [Bytes]>;
       /**
        * See [`Pallet::reroll`].
        **/

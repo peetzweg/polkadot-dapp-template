@@ -1,8 +1,5 @@
-// TODO replace with @polkadot/typegen
-// import "@polkadot/api-augment"
-// import "@polkadot/api-base"
-import "./interfaces/augment-api"
-import "./interfaces/augment-types"
+import "./interfaces/people/augment-api.ts"
+import "./interfaces/people/augment-types.ts"
 import "./global.css"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "react-hot-toast"

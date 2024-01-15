@@ -9,6 +9,7 @@ import type { ApiTypes, AugmentedQuery, QueryableStorageEntry } from '@polkadot/
 import type { Bytes, Null, Option, U8aFixed, Vec, bool, u32, u64 } from '@polkadot/types-codec';
 import type { AnyNumber, ITuple } from '@polkadot/types-codec/types';
 import type { AccountId32, H256 } from '@polkadot/types/interfaces/runtime';
+import type { BpHeaderChainStoredHeaderData, BpMessagesInboundLaneData, BpMessagesLaneId, BpMessagesMessageKey, BpMessagesMessagesOperatingMode, BpMessagesOutboundLaneData, BpParachainsParaInfo, BpRuntimeBasicOperatingMode, BpRuntimeHeaderId, FrameSupportDispatchPerDispatchClassWeight, FrameSystemAccountInfo, FrameSystemEventRecord, FrameSystemLastRuntimeUpgradeInfo, FrameSystemPhase, PalletBridgeGrandpaStorageTypesStoredAuthoritySet, PalletGrandpaStoredPendingChange, PalletGrandpaStoredState, PalletImOnlineSr25519AppSr25519Public, PalletRelayerSetRelayer, PalletTransactionStorageAuthorization, PalletTransactionStorageAuthorizationScope, PalletTransactionStorageTransactionInfo, PalletValidatorSetValidator, PolkadotBulletinChainRuntimeOpaqueSessionKeys, SpConsensusBabeAppPublic, SpConsensusBabeBabeEpochConfiguration, SpConsensusBabeDigestsNextConfigDescriptor, SpConsensusBabeDigestsPreDigest, SpCoreCryptoKeyTypeId, SpRuntimeDigest, SpStakingOffenceOffenceDetails } from '@polkadot/types/lookup';
 import type { Observable } from '@polkadot/types/types';
 
 export type __AugmentedQuery<ApiType extends ApiTypes> = AugmentedQuery<ApiType, () => unknown>;

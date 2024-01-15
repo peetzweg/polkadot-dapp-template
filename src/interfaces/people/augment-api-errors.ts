@@ -414,6 +414,10 @@ declare module '@polkadot/api-base/types/errors' {
        **/
       InvalidContext: AugmentedError<ApiType>;
       /**
+       * The provided bytes can't decode into a key.
+       **/
+      InvalidKeyBytes: AugmentedError<ApiType>;
+      /**
        * The proof is invalid.
        **/
       InvalidProof: AugmentedError<ApiType>;
@@ -624,6 +628,10 @@ declare module '@polkadot/api-base/types/errors' {
        * Account is already applying to make a proof-of-ink.
        **/
       InProgress: AugmentedError<ApiType>;
+      /**
+       * The provided bytes can't decode into a key.
+       **/
+      InvalidKeyBytes: AugmentedError<ApiType>;
       /**
        * The ticket provided is invalid.
        **/
