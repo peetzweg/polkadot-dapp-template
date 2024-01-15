@@ -11,7 +11,7 @@ import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
 import { Input } from "./ui/input.js"
 import { Label } from "./ui/label.js"
-
+import { u8aToHex } from "@polkadot/util"
 interface RegisterProps {
   className?: string
 }
@@ -37,8 +37,14 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
 
   const onClick = useCallback(() => {
     if (!meMember) return
-    register([meMember])
-  }, [meMember, register])
+    const member = api.createType("Member", meMember)
+    const call = api.tx.proofOfInk.register(member.toHex())
+    const u8a = call.method.toU8a()
+
+    const encodedCall = u8aToHex(u8a)
+    console.log("Register Call Data", encodedCall)
+    register([member.toHex()])
+  }, [api, meMember, register])
 
   return (
     <div
