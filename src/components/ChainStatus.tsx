@@ -1,45 +1,25 @@
-/* eslint-disable no-console */
-
-import { ApiPromise, WsProvider } from "@polkadot/api"
 import { useQueries } from "@tanstack/react-query"
-import { useMemo } from "react"
 import { cn } from "../lib/utils.js"
+import { useChain } from "../state/chains.js"
 interface ChainStatusProps {
   className?: string
 }
 
-const Chains = {
-  Rococo: {
-    pjs: "https://polkadot.js.org/apps/?rpc=wss://pop-testnet.parity-lab.parity.io/9942#/explorer",
-    rpc: "wss://pop-testnet.parity-lab.parity.io:443/9942",
-  },
-  "Rococo Bridge Hub": {
-    pjs: "https://polkadot.js.org/apps/?rpc=wss://pop-testnet.parity-lab.parity.io/8943#/explorer",
-    rpc: "wss://pop-testnet.parity-lab.parity.io:443/8943",
-  },
-  "Rococo People": {
-    pjs: "https://polkadot.js.org/apps/?rpc=wss://pop-testnet.parity-lab.parity.io/9910#/explorer",
-    rpc: "wss://pop-testnet.parity-lab.parity.io:443/9910",
-  },
-  "Rococo Bulletin": {
-    pjs: "https://polkadot.js.org/apps/?rpc=wss://pop-testnet.parity-lab.parity.io/10000#/explorer",
-    rpc: "wss://pop-testnet.parity-lab.parity.io:443/10000",
-  },
-}
-
 export const ChainStatus: React.FC<ChainStatusProps> = ({ className }) => {
-  const apis = useMemo(() => {
-    return Object.entries(Chains).map(([, values]) => {
-      return new ApiPromise({ provider: new WsProvider(values.rpc) })
-    })
-  }, [])
+  const chains = useChain()
 
   const results = useQueries({
-    queries: apis.map((api, index) => ({
-      queryKey: ["api", index],
+    queries: Object.entries(chains).map(([name, { api, pjs }]) => ({
+      queryKey: [name, "blockNumber"],
       refetchInterval: 10000,
       queryFn: async () => {
-        return (await api.rpc.chain.getBlock()).block.header.number.toNumber()
+        return {
+          name,
+          link: pjs,
+          blockNumber: (
+            await api.rpc.chain.getBlock()
+          ).block.header.number.toNumber(),
+        }
       },
     })),
   })
@@ -57,15 +37,25 @@ export const ChainStatus: React.FC<ChainStatusProps> = ({ className }) => {
             Chain Status
           </h2>
         </div>
+
         <div className="flex flex-col gap-4">
-          {Object.entries(Chains).map(([name, values], index) => (
-            <div key={name} className="flex flex-row gap-2">
-              <a href={values.pjs} target="_blank" rel="noopener noreferrer">
-                {name}
-              </a>
-              {results[index].data && <div># {results[index].data}</div>}
-            </div>
-          ))}
+          {results.map((result) => {
+            if (!result.data) return null
+            return (
+              <div
+                key={result.data.name}
+                className="flex flex-row gap-2 underline"
+              >
+                <a
+                  href={result.data.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {`${result.data.name} #${result.data.blockNumber}`}
+                </a>
+              </div>
+            )
+          })}
         </div>
       </>
     </div>
