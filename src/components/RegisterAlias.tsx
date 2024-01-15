@@ -1,100 +1,57 @@
+/* eslint-disable no-console */
 import { mnemonicToEntropy } from "@polkadot/util-crypto"
 import { IdCardIcon, ShadowInnerIcon } from "@radix-ui/react-icons"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { handleApiError } from "../lib/handleApiError.js"
+import { useQueryClient } from "@tanstack/react-query"
+import { useCallback } from "react"
+import { useExtrinsic } from "../lib/useExtrinsic.js"
 import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
+import { useQueryRootMembers } from "../queries/useQueryRootMembers.js"
 import { useVerifiable } from "../queries/useVerifiable.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
 import { Input } from "./ui/input.js"
 import { Label } from "./ui/label.js"
-import toast from "react-hot-toast"
 
 interface RegisterAliasProps {
   className?: string
 }
 
+// TODO should probably be available on api as it's a constant of the pallet
+// pub const MOB_CONTEXT: Context = *b"pop:polkadot.network/mob-rule   ";
+// "0x706f703a706f6c6b61646f742e6e6574776f726b2f6d6f622d72756c65202020"
+const MOB_RULE_CONTEXT = new Uint8Array([
+  112, 111, 112, 58, 112, 111, 108, 107, 97, 100, 111, 116, 46, 110, 101, 116,
+  119, 111, 114, 107, 47, 109, 111, 98, 45, 114, 117, 108, 101, 32, 32, 32,
+])
+
 export const RegisterAlias: React.FC<RegisterAliasProps> = ({ className }) => {
   const { api } = useApi()
   const { pair, mnemonic } = useKeyringStore()
-  const queryClient = useQueryClient()
   const { verifiable, isReady } = useVerifiable()
-  const context = Uint8Array.from(new Array(32).fill(1))
 
-  const { mutate: setAlias, isPending } = useMutation({
-    mutationKey: ["people", "setAlias", pair?.address],
-    onError: handleApiError,
-    onSuccess: (data) => {
-      console.log({ data })
-      toast.success("Success!")
-    },
-    mutationFn: async () => {
-      const setAlias = api.tx.people.setAliasAccount(pair!.address)
-      const message = setAlias.toU8a()
-      //TODO use this context
-      // pub const MOB_CONTEXT: Context = *b"pop:polkadot.network/mob-rule   ";
-      const { proof, alias } = await verifiable.generateProof(
-        mnemonicToEntropy(mnemonic!),
-        api.createType("MembersVec", new Uint8Array()).toU8a(),
-        context,
-        message,
-      )
-      api.consts.console.log({ proof, alias, context })
-      const call = api.tx.people.asPersonalAlias(context, setAlias, proof)
+  const { data: members, isLoading } = useQueryRootMembers()
 
-      return new Promise((resolve, reject) => {
-        call
-          .signAndSend(
-            pair!,
-            ({ status, events, dispatchError, dispatchInfo }) => {
-              if (status.isInBlock || status.isFinalized) {
-                const successEvents = events
-                  // find/filter for failed events
-                  .filter(({ event }) =>
-                    api.events.system.ExtrinsicSuccess.is(event),
-                  )
-                if (successEvents.length > 0) {
-                  resolve(successEvents)
-                }
+  const { mutateAsync: asPersonalAlias, isPending } = useExtrinsic(
+    api.tx.people.asPersonalAlias,
+  )
 
-                events
-                  // find/filter for failed events
-                  .filter(({ event }) =>
-                    api.events.system.ExtrinsicFailed.is(event),
-                  )
-                  // we know that data for system.ExtrinsicFailed is
-                  // (DispatchError, DispatchInfo)
-                  .forEach(
-                    ({
-                      event: {
-                        data: [error, info],
-                      },
-                    }) => {
-                      if (error.isModule) {
-                        // for module errors, we have the section indexed, lookup
-                        const decoded = api.registry.findMetaError(
-                          error.asModule,
-                        )
-                        const { docs, method, section } = decoded
+  const setAlias = useCallback(async () => {
+    const setAlias = api.tx.people.setAliasAccount(pair!.address)
+    const message = setAlias.toU8a()
+    const encodedMembers = api.createType("MembersVec", members).toU8a()
 
-                        console.log(`${section}.${method}: ${docs.join(" ")}`)
-                        reject(`${section}.${method}: ${docs.join(" ")}`)
-                      } else {
-                        // Other, CannotLookup, BadOrigin, no extra info
-                        console.log(error.toString())
-                      }
-                    },
-                  )
-              }
-            },
-          )
-          .catch((error) => {
-            reject(error)
-          })
-      })
-    },
-  })
+    const { proof, alias } = await verifiable.generateProof(
+      mnemonicToEntropy(mnemonic!),
+      encodedMembers,
+      MOB_RULE_CONTEXT,
+      message,
+    )
+
+    console.log({ proof, alias, message, encodedMembers })
+
+    // return asPersonalAlias([MOB_RULE_CONTEXT, setAlias, proof])
+  }, [api, asPersonalAlias, members, mnemonic, pair, verifiable])
 
   return (
     <div
@@ -117,9 +74,12 @@ export const RegisterAlias: React.FC<RegisterAliasProps> = ({ className }) => {
           <Input disabled value={pair?.address} />
 
           <Label>Context</Label>
-          <Input disabled value={`[${context.join(", ")}]`} />
+          <Input disabled value={`[${MOB_RULE_CONTEXT.join(", ")}]`} />
 
-          <Button disabled={isPending || !isReady} onClick={() => setAlias()}>
+          <Button
+            disabled={isPending || !isReady || isLoading}
+            onClick={setAlias}
+          >
             Set Account Alias
             {isPending ? (
               <ShadowInnerIcon className="ml-2 animate-spin" />
