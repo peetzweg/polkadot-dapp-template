@@ -31,6 +31,7 @@ const formSchema = z.object({
       (v) => Number(v) >= 0 && Number(v) <= 255,
       "Should be between 0-255",
     ),
+  personalId: z.coerce.number().gte(0).int().optional(),
 })
 
 export const Commit: React.FC<CommitProps> = ({ className }) => {
@@ -40,7 +41,6 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       family: "0",
-      index: "0",
     },
   })
 
@@ -48,14 +48,20 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
   const { data: designs, isLoading } = useQueryDesignFamilies()
   const { mutateAsync: commit } = useExtrinsic(api.tx.proofOfInk.commit)
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
-    ({ family, index }) => {
-      return commit([{ DesignedElective: [0, index] }, null], {
-        onSuccess: () => {
-          void queryClient.invalidateQueries({
-            queryKey: QUERY_KEY_CANDIDATE_STATE,
-          })
+    ({ family, index, personalId }) => {
+      return commit(
+        [
+          { DesignedElective: [0, index] },
+          personalId !== undefined ? Number(personalId) : null,
+        ],
+        {
+          onSuccess: () => {
+            void queryClient.invalidateQueries({
+              queryKey: QUERY_KEY_CANDIDATE_STATE,
+            })
+          },
         },
-      })
+      )
     },
     [commit, queryClient],
   )
@@ -126,6 +132,27 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
                           autoCapitalize="off"
                           autoComplete="off"
                           placeholder="Index"
+                          className="font-mono"
+                          {...field}
+                        />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex flex-row items-center justify-center gap-2">
+                <FormField
+                  control={form.control}
+                  name="personalId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          autoCapitalize="off"
+                          autoComplete="off"
+                          placeholder="Personal ID"
                           className="font-mono"
                           {...field}
                         />
