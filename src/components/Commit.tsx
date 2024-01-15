@@ -12,7 +12,6 @@ import {
   useQueryCandidateState,
 } from "../queries/useQueryCandidateState.js"
 import { useQueryDesignFamilies } from "../queries/useQueryDesignFamilies.js"
-import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form"
 import { Input } from "./ui/input.js"
@@ -40,17 +39,17 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      family: "3",
+      family: "0",
+      index: "0",
     },
   })
 
   const { data: candidate } = useQueryCandidateState()
   const { data: designs, isLoading } = useQueryDesignFamilies()
   const { mutateAsync: commit } = useExtrinsic(api.tx.proofOfInk.commit)
-
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     ({ family, index }) => {
-      return commit([{ Procedural: [3, Number(index)] }, null], {
+      return commit([{ DesignedElective: [0, index] }, null], {
         onSuccess: () => {
           void queryClient.invalidateQueries({
             queryKey: QUERY_KEY_CANDIDATE_STATE,
@@ -60,7 +59,6 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
     },
     [commit, queryClient],
   )
-
   const { active, done } = useMemo(() => {
     return {
       active: !!candidate?.isApplied,
@@ -88,7 +86,7 @@ export const Commit: React.FC<CommitProps> = ({ className }) => {
           <code>ProofOfInk::commit(choice)</code>
         </div>
 
-        {isLoading ? null : designs === undefined ? (
+        {isLoading ? null : designs?.length === 0 ? (
           "No designs available yet"
         ) : (
           <Form {...form}>
