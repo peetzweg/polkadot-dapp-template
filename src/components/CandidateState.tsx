@@ -2,9 +2,10 @@ import { useState } from "react"
 import { cn } from "../lib/utils.js"
 import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
 import { useQueryMobRuleState } from "../queries/useQueryMobRuleState.js"
+import { useQueryPersonalId } from "../queries/useQueryPersonalId.js"
+import { Button } from "./ui/button.js"
 import { Checkbox } from "./ui/checkbox.js"
 import { Textarea } from "./ui/textarea.js"
-import { Button } from "./ui/button.js"
 
 interface CandidateStateProps {
   className?: string
@@ -16,6 +17,7 @@ export const CandidateState: React.FC<CandidateStateProps> = ({
   const [showRaw, setRaw] = useState(false)
   const { data: candidate } = useQueryCandidateState()
   const { data: mobRuleCase } = useQueryMobRuleState()
+  const { data: personalId } = useQueryPersonalId()
 
   return (
     <div
@@ -37,7 +39,12 @@ export const CandidateState: React.FC<CandidateStateProps> = ({
           <code>ProofOfInk::candidates(pubKey)</code>
         </div>
 
-        {showRaw ? (
+        {personalId !== undefined ? (
+          <div className="flex h-full flex-col items-center justify-center">
+            <h1 className="text-xl font-bold">{`#${personalId}`}</h1>
+            <p>Congratulations, you are a person! 🚀</p>
+          </div>
+        ) : showRaw ? (
           <div>
             <Textarea
               rows={10}
