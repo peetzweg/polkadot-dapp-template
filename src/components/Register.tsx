@@ -1,48 +1,28 @@
-import { mnemonicToEntropy } from "@polkadot/util-crypto"
 import { PersonIcon, ShadowInnerIcon } from "@radix-ui/react-icons"
-import { useQuery } from "@tanstack/react-query"
 import { useCallback } from "react"
 import { useExtrinsic } from "../lib/useExtrinsic.js"
 import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
 import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
-import { useVerifiable } from "../queries/useVerifiable.js"
-import { useKeyringStore } from "../state/keyring.js"
+import { useQueryMemberKey } from "../queries/useQueryMemberKey.js"
 import { Button } from "./ui/button.js"
 import { Input } from "./ui/input.js"
 import { Label } from "./ui/label.js"
-import { u8aToHex } from "@polkadot/util"
 interface RegisterProps {
   className?: string
 }
 
 export const Register: React.FC<RegisterProps> = ({ className }) => {
   const { api } = useApi()
-  const { pair, mnemonic } = useKeyringStore()
-  const { verifiable, isReady } = useVerifiable()
 
   const { data: candidate } = useQueryCandidateState()
-
-  const { data: meMember } = useQuery({
-    queryKey: ["member", pair?.address, mnemonic],
-    queryFn: async () => {
-      return verifiable.memberFromEntropy(mnemonicToEntropy(mnemonic!))
-    },
-    enabled: isReady,
-  })
-
+  const { data: meMember } = useQueryMemberKey()
   const { mutateAsync: register, isPending } = useExtrinsic(
     api.tx.proofOfInk.register,
   )
 
   const onClick = useCallback(() => {
-    if (!meMember) return
     const member = api.createType("Member", meMember)
-    const call = api.tx.proofOfInk.register(member.toHex())
-    const u8a = call.method.toU8a()
-
-    const encodedCall = u8aToHex(u8a)
-    console.log("Register Call Data", encodedCall)
     register([member.toHex()])
   }, [api, meMember, register])
 
@@ -71,7 +51,10 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
           <Label>Member</Label>
           <Input disabled value={api.createType("Member", meMember).toHex()} />
 
-          <Button disabled={isPending} onClick={onClick}>
+          <Button
+            disabled={isPending || meMember === undefined}
+            onClick={onClick}
+          >
             Become a Person
             {isPending ? (
               <ShadowInnerIcon className="ml-2 animate-spin" />
