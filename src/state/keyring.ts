@@ -32,27 +32,23 @@ export const useKeyringStore = create<KeyringState>()((
       set({ mnemonic: undefined, pair: undefined })
       localStorage.clear()
     },
-    createFromMnemonic: (mnemonic, name, derivation = "Alice") => {
+    createFromMnemonic: (mnemonic, name, derivation?: string) => {
       //TODO test if valid mnemonic
       set({
         mnemonic,
         pair: get().keyring.addFromUri(
-          `${mnemonic.trim()}//${derivation.trim()}`,
+          `${mnemonic.trim()}` + (derivation ? `//${derivation}` : ""),
           { name },
           "sr25519",
         ),
       })
     },
-    create: (name, derivation = "Alice") => {
+    create: (name) => {
       const freshMnemonic = mnemonicGenerate(24)
 
       set({
         mnemonic: freshMnemonic,
-        pair: get().keyring.addFromUri(
-          `${freshMnemonic}//${derivation}`,
-          { name },
-          "sr25519",
-        ),
+        pair: get().keyring.addFromUri(`${freshMnemonic}`, { name }, "sr25519"),
       })
     },
     store: () => {
@@ -67,5 +63,6 @@ export const useKeyringStore = create<KeyringState>()((
       get().createFromMnemonic(mnemonic, "Restored Account")
       return true
     },
+    // TODO add member key calculation to keyring
   }
 })
