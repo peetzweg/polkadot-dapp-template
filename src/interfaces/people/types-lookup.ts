@@ -2843,14 +2843,14 @@ declare module '@polkadot/types/lookup' {
     readonly type: 'Building' | 'Built';
   }
 
-  /** @name PalletPeoplePersonRecord (339) */
+  /** @name PalletPeoplePersonRecord (340) */
   interface PalletPeoplePersonRecord extends Struct {
-    readonly maybeKey: Option<ArkScale>;
+    readonly maybeKey: Option<Bytes>;
     readonly locks: u32;
-    readonly latestRevision: Option<ITuple<[u32, u64, ArkScale]>>;
+    readonly latestRevision: Option<ITuple<[u32, u64, Bytes]>>;
   }
 
-  /** @name PalletPeopleError (345) */
+  /** @name PalletPeopleError (347) */
   interface PalletPeopleError extends Enum {
     readonly isNotPerson: boolean;
     readonly isNoKey: boolean;
@@ -2873,7 +2873,7 @@ declare module '@polkadot/types/lookup' {
     readonly type: 'NotPerson' | 'NoKey' | 'InvalidContext' | 'InvalidAccount' | 'AccountInUse' | 'InvalidProof' | 'InvalidSignature' | 'NoMembers' | 'NotBuilding' | 'Incomplete' | 'AlreadyBuilding' | 'StillFresh' | 'StillFreshEnough' | 'AlreadyPushed' | 'TooManyMembers' | 'NoRoot' | 'NonExistent' | 'InvalidKeyBytes';
   }
 
-  /** @name PalletMobRuleMobCredit (346) */
+  /** @name PalletMobRuleMobCredit (348) */
   interface PalletMobRuleMobCredit extends Struct {
     readonly voted: u32;
     readonly cleaned: u32;
@@ -2882,7 +2882,7 @@ declare module '@polkadot/types/lookup' {
     readonly rewardedUntil: u32;
   }
 
-  /** @name PalletMobRuleCase (348) */
+  /** @name PalletMobRuleCase (350) */
   interface PalletMobRuleCase extends Enum {
     readonly isOpen: boolean;
     readonly asOpen: {
@@ -2903,14 +2903,14 @@ declare module '@polkadot/types/lookup' {
     readonly type: 'Open' | 'Ripe' | 'Done';
   }
 
-  /** @name PalletMobRuleCaseDetails (349) */
+  /** @name PalletMobRuleCaseDetails (351) */
   interface PalletMobRuleCaseDetails extends Struct {
     readonly statement: FrameSupportRealityStatement;
     readonly context: Bytes;
     readonly callback: FrameSupportRealityCallback;
   }
 
-  /** @name FrameSupportRealityStatement (350) */
+  /** @name FrameSupportRealityStatement (352) */
   interface FrameSupportRealityStatement extends Enum {
     readonly isProofOfInk: boolean;
     readonly asProofOfInk: {
@@ -2921,7 +2921,7 @@ declare module '@polkadot/types/lookup' {
     readonly type: 'ProofOfInk';
   }
 
-  /** @name FrameSupportRealityProofOfInkInkSpec (351) */
+  /** @name FrameSupportRealityProofOfInkInkSpec (353) */
   interface FrameSupportRealityProofOfInkInkSpec extends Enum {
     readonly isDesignedElective: boolean;
     readonly asDesignedElective: ITuple<[u16, u16]>;
@@ -2934,13 +2934,13 @@ declare module '@polkadot/types/lookup' {
     readonly type: 'DesignedElective' | 'ProceduralAccount' | 'ProceduralPersonal' | 'Procedural';
   }
 
-  /** @name FrameSupportRealityCallback (352) */
+  /** @name FrameSupportRealityCallback (354) */
   interface FrameSupportRealityCallback extends Struct {
     readonly palletIndex: u8;
     readonly callIndex: u8;
   }
 
-  /** @name PalletMobRuleVoteTally (353) */
+  /** @name PalletMobRuleVoteTally (355) */
   interface PalletMobRuleVoteTally extends Struct {
     readonly confidentTrue: u32;
     readonly probable: u32;
@@ -2949,7 +2949,7 @@ declare module '@polkadot/types/lookup' {
     readonly contempt: u32;
   }
 
-  /** @name PalletMobRuleError (354) */
+  /** @name PalletMobRuleError (356) */
   interface PalletMobRuleError extends Enum {
     readonly isNoSuchCase: boolean;
     readonly isNoSuchVote: boolean;
@@ -2962,7 +2962,7 @@ declare module '@polkadot/types/lookup' {
     readonly type: 'NoSuchCase' | 'NoSuchVote' | 'NotOpen' | 'NotRipe' | 'NotDone' | 'CodecError' | 'DispatchError' | 'Recent';
   }
 
-  /** @name PalletProofOfInkCandidate (355) */
+  /** @name PalletProofOfInkCandidate (357) */
   interface PalletProofOfInkCandidate extends Enum {
     readonly isReferred: boolean;
     readonly asReferred: {
@@ -2993,7 +2993,7 @@ declare module '@polkadot/types/lookup' {
     readonly type: 'Referred' | 'Applied' | 'Selected' | 'Proven';
   }
 
-  /** @name PalletProofOfInkCredibility (356) */
+  /** @name PalletProofOfInkCredibility (358) */
   interface PalletProofOfInkCredibility extends Enum {
     readonly isReferred: boolean;
     readonly asReferred: u64;
@@ -3001,7 +3001,7 @@ declare module '@polkadot/types/lookup' {
     readonly type: 'Referred' | 'Deposit';
   }
 
-  /** @name PalletProofOfInkAllocation (357) */
+  /** @name PalletProofOfInkAllocation (359) */
   interface PalletProofOfInkAllocation extends Enum {
     readonly isInitial: boolean;
     readonly isInitDone: boolean;
@@ -3009,7 +3009,7 @@ declare module '@polkadot/types/lookup' {
     readonly type: 'Initial' | 'InitDone' | 'Full';
   }
 
-  /** @name PalletProofOfInkPerson (358) */
+  /** @name PalletProofOfInkPerson (360) */
   interface PalletProofOfInkPerson extends Struct {
     readonly design: Option<FrameSupportRealityProofOfInkInkSpec>;
     readonly activeReferrals: u32;
@@ -3019,7 +3019,7 @@ declare module '@polkadot/types/lookup' {
     readonly banned: bool;
   }
 
-  /** @name PalletProofOfInkConfigRecord (360) */
+  /** @name PalletProofOfInkConfigRecord (362) */
   interface PalletProofOfInkConfigRecord extends Struct {
     readonly rerollTimeout: u32;
     readonly fasttrackCount: u32;
@@ -3031,7 +3031,7 @@ declare module '@polkadot/types/lookup' {
     readonly timeout: u32;
   }
 
-  /** @name PalletProofOfInkError (361) */
+  /** @name PalletProofOfInkError (363) */
   interface PalletProofOfInkError extends Enum {
     readonly isInProgress: boolean;
     readonly isNoReferral: boolean;
@@ -3063,7 +3063,7 @@ declare module '@polkadot/types/lookup' {
     readonly type: 'InProgress' | 'NoReferral' | 'BadContext' | 'UnexpectedJudgement' | 'NoArgs' | 'NotApplied' | 'NotSelected' | 'NotProven' | 'AlreadyStarted' | 'OutOfRange' | 'AlreadyTaken' | 'NoMoreReferrals' | 'TooEarly' | 'DesignInvalid' | 'BadParent' | 'BadFamily' | 'WrongFamily' | 'IndexTooBig' | 'Busy' | 'Banned' | 'Improbable' | 'IdReserved' | 'IdUsed' | 'InvalidTicket' | 'NotAuthorized' | 'StubInUse' | 'InvalidKeyBytes';
   }
 
-  /** @name SpRuntimeMultiSignature (363) */
+  /** @name SpRuntimeMultiSignature (365) */
   interface SpRuntimeMultiSignature extends Enum {
     readonly isEd25519: boolean;
     readonly asEd25519: SpCoreEd25519Signature;
@@ -3074,37 +3074,37 @@ declare module '@polkadot/types/lookup' {
     readonly type: 'Ed25519' | 'Sr25519' | 'Ecdsa';
   }
 
-  /** @name SpCoreEd25519Signature (364) */
+  /** @name SpCoreEd25519Signature (366) */
   interface SpCoreEd25519Signature extends U8aFixed {}
 
-  /** @name SpCoreSr25519Signature (366) */
+  /** @name SpCoreSr25519Signature (368) */
   interface SpCoreSr25519Signature extends U8aFixed {}
 
-  /** @name SpCoreEcdsaSignature (367) */
+  /** @name SpCoreEcdsaSignature (369) */
   interface SpCoreEcdsaSignature extends U8aFixed {}
 
-  /** @name FrameSystemExtensionsCheckNonZeroSender (369) */
+  /** @name FrameSystemExtensionsCheckNonZeroSender (371) */
   type FrameSystemExtensionsCheckNonZeroSender = Null;
 
-  /** @name FrameSystemExtensionsCheckSpecVersion (370) */
+  /** @name FrameSystemExtensionsCheckSpecVersion (372) */
   type FrameSystemExtensionsCheckSpecVersion = Null;
 
-  /** @name FrameSystemExtensionsCheckTxVersion (371) */
+  /** @name FrameSystemExtensionsCheckTxVersion (373) */
   type FrameSystemExtensionsCheckTxVersion = Null;
 
-  /** @name FrameSystemExtensionsCheckGenesis (372) */
+  /** @name FrameSystemExtensionsCheckGenesis (374) */
   type FrameSystemExtensionsCheckGenesis = Null;
 
-  /** @name FrameSystemExtensionsCheckNonce (375) */
+  /** @name FrameSystemExtensionsCheckNonce (377) */
   interface FrameSystemExtensionsCheckNonce extends Compact<u32> {}
 
-  /** @name FrameSystemExtensionsCheckWeight (376) */
+  /** @name FrameSystemExtensionsCheckWeight (378) */
   type FrameSystemExtensionsCheckWeight = Null;
 
-  /** @name PalletTransactionPaymentChargeTransactionPayment (377) */
+  /** @name PalletTransactionPaymentChargeTransactionPayment (379) */
   interface PalletTransactionPaymentChargeTransactionPayment extends Compact<u128> {}
 
-  /** @name PeopleRococoRuntimeRuntime (378) */
+  /** @name PeopleRococoRuntimeRuntime (380) */
   type PeopleRococoRuntimeRuntime = Null;
 
 } // declare module

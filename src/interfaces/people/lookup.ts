@@ -2738,21 +2738,21 @@ export default {
     }
   },
   /**
-   * Lookup339: pallet_people::pallet::PersonRecord<ark_scale::ArkScale>
+   * Lookup340: pallet_people::pallet::PersonRecord<bounded_collections::bounded_vec::BoundedVec<T, S>>
    **/
   PalletPeoplePersonRecord: {
-    maybeKey: 'Option<ArkScale>',
+    maybeKey: 'Option<Bytes>',
     locks: 'u32',
-    latestRevision: 'Option<(u32,u64,ArkScale)>'
+    latestRevision: 'Option<(u32,u64,Bytes)>'
   },
   /**
-   * Lookup345: pallet_people::pallet::Error<T>
+   * Lookup347: pallet_people::pallet::Error<T>
    **/
   PalletPeopleError: {
     _enum: ['NotPerson', 'NoKey', 'InvalidContext', 'InvalidAccount', 'AccountInUse', 'InvalidProof', 'InvalidSignature', 'NoMembers', 'NotBuilding', 'Incomplete', 'AlreadyBuilding', 'StillFresh', 'StillFreshEnough', 'AlreadyPushed', 'TooManyMembers', 'NoRoot', 'NonExistent', 'InvalidKeyBytes']
   },
   /**
-   * Lookup346: pallet_mob_rule::pallet::MobCredit
+   * Lookup348: pallet_mob_rule::pallet::MobCredit
    **/
   PalletMobRuleMobCredit: {
     voted: 'u32',
@@ -2762,7 +2762,7 @@ export default {
     rewardedUntil: 'u32'
   },
   /**
-   * Lookup348: pallet_mob_rule::pallet::Case<people_rococo_runtime::RuntimeCall>
+   * Lookup350: pallet_mob_rule::pallet::Case<people_rococo_runtime::RuntimeCall>
    **/
   PalletMobRuleCase: {
     _enum: {
@@ -2782,7 +2782,7 @@ export default {
     }
   },
   /**
-   * Lookup349: pallet_mob_rule::pallet::CaseDetails<people_rococo_runtime::RuntimeCall>
+   * Lookup351: pallet_mob_rule::pallet::CaseDetails<people_rococo_runtime::RuntimeCall>
    **/
   PalletMobRuleCaseDetails: {
     statement: 'FrameSupportRealityStatement',
@@ -2790,7 +2790,7 @@ export default {
     callback: 'FrameSupportRealityCallback'
   },
   /**
-   * Lookup350: frame_support::traits::reality::Statement
+   * Lookup352: frame_support::traits::reality::Statement
    **/
   FrameSupportRealityStatement: {
     _enum: {
@@ -2802,7 +2802,7 @@ export default {
     }
   },
   /**
-   * Lookup351: frame_support::traits::reality::proof_of_ink::InkSpec
+   * Lookup353: frame_support::traits::reality::proof_of_ink::InkSpec
    **/
   FrameSupportRealityProofOfInkInkSpec: {
     _enum: {
@@ -2813,14 +2813,14 @@ export default {
     }
   },
   /**
-   * Lookup352: frame_support::traits::reality::Callback<Params, RuntimeCall>
+   * Lookup354: frame_support::traits::reality::Callback<Params, RuntimeCall>
    **/
   FrameSupportRealityCallback: {
     palletIndex: 'u8',
     callIndex: 'u8'
   },
   /**
-   * Lookup353: pallet_mob_rule::pallet::VoteTally
+   * Lookup355: pallet_mob_rule::pallet::VoteTally
    **/
   PalletMobRuleVoteTally: {
     confidentTrue: 'u32',
@@ -2830,13 +2830,13 @@ export default {
     contempt: 'u32'
   },
   /**
-   * Lookup354: pallet_mob_rule::pallet::Error<T>
+   * Lookup356: pallet_mob_rule::pallet::Error<T>
    **/
   PalletMobRuleError: {
     _enum: ['NoSuchCase', 'NoSuchVote', 'NotOpen', 'NotRipe', 'NotDone', 'CodecError', 'DispatchError', 'Recent']
   },
   /**
-   * Lookup355: pallet_proof_of_ink::pallet::Candidate<JudgementId, Deposit, BlockNumber>
+   * Lookup357: pallet_proof_of_ink::pallet::Candidate<JudgementId, Deposit, BlockNumber>
    **/
   PalletProofOfInkCandidate: {
     _enum: {
@@ -2865,7 +2865,7 @@ export default {
     }
   },
   /**
-   * Lookup356: pallet_proof_of_ink::pallet::Credibility<Deposit, AccountId>
+   * Lookup358: pallet_proof_of_ink::pallet::Credibility<Deposit, AccountId>
    **/
   PalletProofOfInkCredibility: {
     _enum: {
@@ -2874,13 +2874,13 @@ export default {
     }
   },
   /**
-   * Lookup357: pallet_proof_of_ink::pallet::Allocation
+   * Lookup359: pallet_proof_of_ink::pallet::Allocation
    **/
   PalletProofOfInkAllocation: {
     _enum: ['Initial', 'InitDone', 'Full']
   },
   /**
-   * Lookup358: pallet_proof_of_ink::pallet::Person
+   * Lookup360: pallet_proof_of_ink::pallet::Person
    **/
   PalletProofOfInkPerson: {
     design: 'Option<FrameSupportRealityProofOfInkInkSpec>',
@@ -2891,7 +2891,7 @@ export default {
     banned: 'bool'
   },
   /**
-   * Lookup360: pallet_proof_of_ink::pallet::ConfigRecord<BlockNumber>
+   * Lookup362: pallet_proof_of_ink::pallet::ConfigRecord<BlockNumber>
    **/
   PalletProofOfInkConfigRecord: {
     rerollTimeout: 'u32',
@@ -2904,13 +2904,13 @@ export default {
     timeout: 'u32'
   },
   /**
-   * Lookup361: pallet_proof_of_ink::pallet::Error<T>
+   * Lookup363: pallet_proof_of_ink::pallet::Error<T>
    **/
   PalletProofOfInkError: {
     _enum: ['InProgress', 'NoReferral', 'BadContext', 'UnexpectedJudgement', 'NoArgs', 'NotApplied', 'NotSelected', 'NotProven', 'AlreadyStarted', 'OutOfRange', 'AlreadyTaken', 'NoMoreReferrals', 'TooEarly', 'DesignInvalid', 'BadParent', 'BadFamily', 'WrongFamily', 'IndexTooBig', 'Busy', 'Banned', 'Improbable', 'IdReserved', 'IdUsed', 'InvalidTicket', 'NotAuthorized', 'StubInUse', 'InvalidKeyBytes']
   },
   /**
-   * Lookup363: sp_runtime::MultiSignature
+   * Lookup365: sp_runtime::MultiSignature
    **/
   SpRuntimeMultiSignature: {
     _enum: {
@@ -2920,47 +2920,47 @@ export default {
     }
   },
   /**
-   * Lookup364: sp_core::ed25519::Signature
+   * Lookup366: sp_core::ed25519::Signature
    **/
   SpCoreEd25519Signature: '[u8;64]',
   /**
-   * Lookup366: sp_core::sr25519::Signature
+   * Lookup368: sp_core::sr25519::Signature
    **/
   SpCoreSr25519Signature: '[u8;64]',
   /**
-   * Lookup367: sp_core::ecdsa::Signature
+   * Lookup369: sp_core::ecdsa::Signature
    **/
   SpCoreEcdsaSignature: '[u8;65]',
   /**
-   * Lookup369: frame_system::extensions::check_non_zero_sender::CheckNonZeroSender<T>
+   * Lookup371: frame_system::extensions::check_non_zero_sender::CheckNonZeroSender<T>
    **/
   FrameSystemExtensionsCheckNonZeroSender: 'Null',
   /**
-   * Lookup370: frame_system::extensions::check_spec_version::CheckSpecVersion<T>
+   * Lookup372: frame_system::extensions::check_spec_version::CheckSpecVersion<T>
    **/
   FrameSystemExtensionsCheckSpecVersion: 'Null',
   /**
-   * Lookup371: frame_system::extensions::check_tx_version::CheckTxVersion<T>
+   * Lookup373: frame_system::extensions::check_tx_version::CheckTxVersion<T>
    **/
   FrameSystemExtensionsCheckTxVersion: 'Null',
   /**
-   * Lookup372: frame_system::extensions::check_genesis::CheckGenesis<T>
+   * Lookup374: frame_system::extensions::check_genesis::CheckGenesis<T>
    **/
   FrameSystemExtensionsCheckGenesis: 'Null',
   /**
-   * Lookup375: frame_system::extensions::check_nonce::CheckNonce<T>
+   * Lookup377: frame_system::extensions::check_nonce::CheckNonce<T>
    **/
   FrameSystemExtensionsCheckNonce: 'Compact<u32>',
   /**
-   * Lookup376: frame_system::extensions::check_weight::CheckWeight<T>
+   * Lookup378: frame_system::extensions::check_weight::CheckWeight<T>
    **/
   FrameSystemExtensionsCheckWeight: 'Null',
   /**
-   * Lookup377: pallet_transaction_payment::ChargeTransactionPayment<T>
+   * Lookup379: pallet_transaction_payment::ChargeTransactionPayment<T>
    **/
   PalletTransactionPaymentChargeTransactionPayment: 'Compact<u128>',
   /**
-   * Lookup378: people_rococo_runtime::Runtime
+   * Lookup380: people_rococo_runtime::Runtime
    **/
   PeopleRococoRuntimeRuntime: 'Null'
 };

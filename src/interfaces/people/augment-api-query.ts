@@ -428,7 +428,7 @@ declare module '@polkadot/api-base/types/storage' {
        * The current individuals we recognise: lookup from the crypto (public) key into the immutable
        * ID of the individual.
        **/
-      keys: AugmentedQuery<ApiType, (arg: ArkScale | string | Uint8Array) => Observable<Option<u64>>, [ArkScale]> & QueryableStorageEntry<ApiType, [ArkScale]>;
+      keys: AugmentedQuery<ApiType, (arg: Bytes | string | Uint8Array) => Observable<Option<u64>>, [Bytes]> & QueryableStorageEntry<ApiType, [Bytes]>;
       /**
        * The current individuals we recognise: immutable ID of the individual into various
        * information about their status.
@@ -445,7 +445,7 @@ declare module '@polkadot/api-base/types/storage' {
       /**
        * The key pages.
        **/
-      rootKeys: AugmentedQuery<ApiType, (arg: ITuple<[u32, u32]> | [u32 | AnyNumber | Uint8Array, u32 | AnyNumber | Uint8Array]) => Observable<Vec<ArkScale>>, [ITuple<[u32, u32]>]> & QueryableStorageEntry<ApiType, [ITuple<[u32, u32]>]>;
+      rootKeys: AugmentedQuery<ApiType, (arg: ITuple<[u32, u32]> | [u32 | AnyNumber | Uint8Array, u32 | AnyNumber | Uint8Array]) => Observable<Vec<Bytes>>, [ITuple<[u32, u32]>]> & QueryableStorageEntry<ApiType, [ITuple<[u32, u32]>]>;
       /**
        * The current identities which have been suspended from personhood. We're no longer confident
        * that there is a unique individual behind each one.
