@@ -119,7 +119,8 @@ export const Bandersnatch: React.FC = () => {
             </div>
           </div>
         )}
-        {error !== undefined && <div>{JSON.stringify(error)}</div>}
+        {error !== undefined ||
+          (error !== null && <div>{JSON.stringify(error)}</div>)}
         <div>
           <Button
             className="w-full"

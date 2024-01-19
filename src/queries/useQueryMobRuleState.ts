@@ -26,6 +26,7 @@ export const useQueryMobRuleState = () => {
 
       return mobRuleCase.unwrap()
     },
+    staleTime: 10000,
     enabled: !!candidate?.isSelected && candidate.asSelected.judging.isSome,
   })
 }

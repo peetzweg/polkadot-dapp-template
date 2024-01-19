@@ -8,12 +8,14 @@ import { useQueryMemberKey } from "../queries/useQueryMemberKey.js"
 import { Button } from "./ui/button.js"
 import { Input } from "./ui/input.js"
 import { Label } from "./ui/label.js"
+import { useQueryClient } from "@tanstack/react-query"
 interface RegisterProps {
   className?: string
 }
 
 export const Register: React.FC<RegisterProps> = ({ className }) => {
   const { api } = useApi()
+  const client = useQueryClient()
 
   const { data: candidate } = useQueryCandidateState()
   const { data: meMember } = useQueryMemberKey()
@@ -23,8 +25,12 @@ export const Register: React.FC<RegisterProps> = ({ className }) => {
 
   const onClick = useCallback(() => {
     const member = api.createType("Member", meMember)
-    register([member.toHex()])
-  }, [api, meMember, register])
+    register([member.toHex()], {
+      onSuccess: () => {
+        client.invalidateQueries()
+      },
+    })
+  }, [api, client, meMember, register])
 
   return (
     <div

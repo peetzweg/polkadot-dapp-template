@@ -15,7 +15,7 @@ import { Register } from "./components/Register"
 import { RegisterAlias } from "./components/RegisterAlias"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { RequireApi } from "./components/helpers/RequireApi"
-import { RequireKeyPair } from "./components/helpers/RequireKeyPair"
+import { useQueryPersonalId } from "./queries/useQueryPersonalId"
 import { useKeyringStore } from "./state/keyring"
 
 function App() {
@@ -39,27 +39,42 @@ function App() {
                 <NewAccount />
               </div>
             ) : (
-              <div className="flex flex-col gap-4 px-4 py-2">
-                <div className="auto-rows grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <ChainStatus />
-                  <Faucet />
-                  <AccountInfo />
-                  <CandidateState />
-                  <Apply />
-                  <Commit />
-                  <Evidence />
-                  <MobRuleState />
-                  <Register />
-                  <PeopleState />
-                  <RegisterAlias />
-                </div>
-                <hr className="my-10" />
-                <Bandersnatch />
-              </div>
+              <AppWithPair />
             )}
           </RequireApi>
         </main>
       </div>
+    </div>
+  )
+}
+
+const AppWithPair = () => {
+  const { data: personalId } = useQueryPersonalId()
+  return (
+    <div className="flex flex-col gap-4 px-4 py-2">
+      <div className="auto-rows grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <ChainStatus />
+        <Faucet />
+        <AccountInfo />
+        {personalId === undefined ? (
+          <>
+            <CandidateState />
+            <Apply />
+            <Commit />
+            <Evidence />
+            <MobRuleState />
+            <Register />
+          </>
+        ) : (
+          <>
+            <CandidateState />
+            <PeopleState />
+            <RegisterAlias />
+          </>
+        )}
+      </div>
+      <hr className="my-10" />
+      {personalId !== undefined && <Bandersnatch />}
     </div>
   )
 }
