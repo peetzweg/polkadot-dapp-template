@@ -20,7 +20,7 @@ export const useExtrinsic = <
   fn: TExtrinsicFn,
 ): UseMutationResult<void, Error, Parameters<TExtrinsicFn>, void> => {
   const { pair } = useKeyringStore()
-  if (!pair) throw "No pair"
+  if (!pair) throw "No KeyPair Available"
   return useExtrinsicAs(fn, pair!)
 }
 

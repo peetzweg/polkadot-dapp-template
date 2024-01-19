@@ -15,6 +15,7 @@ import { Register } from "./components/Register"
 import { RegisterAlias } from "./components/RegisterAlias"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { RequireApi } from "./components/helpers/RequireApi"
+import { RequireKeyPair } from "./components/helpers/RequireKeyPair"
 import { useKeyringStore } from "./state/keyring"
 
 function App() {
@@ -33,12 +34,11 @@ function App() {
       <div className="flex-1">
         <main className="relative mx-auto w-full py-6 sm:py-2">
           <RequireApi fallback={null}>
-            {!pair && (
+            {!pair ? (
               <div className="flex flex-col gap-4 px-4 py-2">
                 <NewAccount />
               </div>
-            )}
-            {pair && (
+            ) : (
               <div className="flex flex-col gap-4 px-4 py-2">
                 <div className="auto-rows grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                   <ChainStatus />
@@ -49,12 +49,9 @@ function App() {
                   <Commit />
                   <Evidence />
                   <MobRuleState />
-                  {/* <Intervene /> */}
                   <Register />
                   <PeopleState />
                   <RegisterAlias />
-
-                  {/* <AddDesignFamily /> */}
                 </div>
                 <hr className="my-10" />
                 <Bandersnatch />
