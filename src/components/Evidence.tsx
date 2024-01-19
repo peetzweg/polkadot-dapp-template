@@ -1,16 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import { u8aToHex } from "@polkadot/util"
+import { blake2AsU8a } from "@polkadot/util-crypto"
 import { ShadowInnerIcon, UploadIcon } from "@radix-ui/react-icons"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import * as z from "zod"
+import "../interfaces/bulletin/augment-api.ts"
+import "../interfaces/bulletin/augment-types.ts"
 import { useExtrinsic } from "../lib/useExtrinsic.js"
 import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
-import { blake2AsU8a } from "@polkadot/util-crypto"
-import { u8aToHex } from "@polkadot/util"
-import "../interfaces/bulletin/augment-api.ts"
-import "../interfaces/bulletin/augment-types.ts"
 
 import {
   QUERY_KEY as QUERY_KEY_CANDIDATE_STATE,
@@ -18,17 +18,9 @@ import {
 } from "../queries/useQueryCandidateState.js"
 
 import { useChain } from "../state/chains.js"
-import { Button } from "./ui/button.js"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "./ui/form.js"
-import { Input } from "./ui/input.js"
 import { AspectRatio } from "./ui/aspect-ratio.js"
-import { useQueryStorageAuthorizations } from "../queries/useQueryAuthorizations.ts"
+import { Button } from "./ui/button.js"
+import { Input } from "./ui/input.js"
 
 interface EvidenceProps {
   className?: string
@@ -50,8 +42,9 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
   })
 
   const { data: candidate } = useQueryCandidateState()
-  const { data: authorizations } = useQueryStorageAuthorizations()
-  console.log({ authorizations })
+  // TODO work with authorizations here, not decoding correctly atm.
+  // const { data: authorizations } = useQueryStorageAuthorizations()
+  // console.log({ authorizations })
 
   const { mutateAsync: store } = useExtrinsic(
     Bulletin.api.tx.transactionStorage.store,
@@ -75,13 +68,15 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
       // Task: get blake2 of file
       const buffer = await evidence[0].arrayBuffer()
       const bytes = new Uint8Array(buffer)
+      console.log({ bytes })
 
       // TODO: maybe this needs to be done in a service worker for bigger files?
       const blake2HashOfFile = u8aToHex(blake2AsU8a(bytes))
       setHash(blake2HashOfFile)
+      console.log({ blake2HashOfFile })
 
       // Task: Submit evidence bytes to bulletin chain
-      await store([bytes])
+      // await store([bytes])
 
       // Task: submit hash of evidence to ProofOfInk
       return submitEvidence([blake2HashOfFile], {
