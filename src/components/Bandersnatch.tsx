@@ -2,12 +2,14 @@ import { mnemonicGenerate, mnemonicToEntropy } from "@polkadot/util-crypto"
 import { useMutation } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { useApi } from "../providers/api-provider.js"
+import { useQueryMemberKey } from "../queries/useQueryMemberKey.js"
+import { useQueryRootMembers } from "../queries/useQueryRootMembers.js"
 import { useVerifiable } from "../queries/useVerifiable.js"
+import { ProofResults } from "../queries/verifiable-worker.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
 import { Input } from "./ui/input.js"
 import { Textarea } from "./ui/textarea.js"
-import { ProofResults } from "../queries/verifiable-worker.js"
 
 export const Bandersnatch: React.FC = () => {
   // TODO how to use generated pair as entropy and not mnemonic directly
@@ -15,44 +17,10 @@ export const Bandersnatch: React.FC = () => {
 
   const { api } = useApi()
   const { mnemonic } = useKeyringStore()
-
-  const [members, setMembers] = useState<Uint8Array[]>([])
-  const [me, setMe] = useState<Uint8Array | undefined>(undefined)
+  const { data: members } = useQueryRootMembers()
+  const { data: me } = useQueryMemberKey()
 
   const { verifiable, isReady } = useVerifiable()
-
-  useEffect(() => {
-    if (!isReady || !mnemonic) return
-
-    Promise.all(
-      new Array(0)
-        .fill(1)
-        .map(() => mnemonicGenerate(24))
-        .map((randomMnemonic) => mnemonicToEntropy(randomMnemonic))
-        .map((entropy) => api.createType("Entropy", entropy))
-        .map((entropy) => entropy.toU8a())
-        .map((bytes) => verifiable.memberFromEntropy(bytes)),
-    )
-      .then((members) => {
-        setMembers(members)
-      })
-      .catch((error) => {
-        console.error("Error during member creation")
-        console.error(error)
-      })
-  }, [api, isReady, mnemonic, verifiable])
-
-  useEffect(() => {
-    if (!isReady || !mnemonic) return
-    const entropy = api.createType("Entropy", mnemonicToEntropy(mnemonic))
-    verifiable
-      .memberFromEntropy(entropy.toU8a())
-      .then((memberMe) => setMe(memberMe))
-      .catch((error) => {
-        console.error("Error during creation of member me")
-        console.error(error)
-      })
-  }, [api, isReady, mnemonic, verifiable])
 
   const {
     data,
@@ -60,8 +28,9 @@ export const Bandersnatch: React.FC = () => {
     isPending,
   } = useMutation({
     mutationKey: [mnemonic],
-    mutationFn: () => {
+    mutationFn: async () => {
       const memberVec = api.createType("MembersVec", members)
+      console.log({ memberVec, me, isReady })
       return verifiable.generateProof(
         me!,
         memberVec.toU8a(),
@@ -80,6 +49,7 @@ export const Bandersnatch: React.FC = () => {
       )
     },
   })
+  console.log({ data, isPending })
 
   const { data: validationData, mutate: validate } = useMutation({
     onError: (error) => {
@@ -113,9 +83,9 @@ export const Bandersnatch: React.FC = () => {
           <h2 className="text-3xl font-extrabold leading-6 tracking-tight">
             Bandersnatch
           </h2>
-          {/* <p className="mt-1 break-all font-mono text-sm text-gray-500">
+          <p className="mt-1 break-all font-mono text-sm text-gray-500">
             Using <code>small-ring</code>
-          </p> */}
+          </p>
         </div>
 
         <div>
@@ -129,25 +99,27 @@ export const Bandersnatch: React.FC = () => {
             {api.createType("Member", me).toHex().toString()}
           </div>
         </div>
-        <div>
-          <h2 className="text-xl font-extrabold leading-6 tracking-tight">
-            {`Members (${members.length})`}
-          </h2>
-          <p className="break-all font-mono text-sm text-gray-500">
-            Public keys of members in set
-          </p>
-          <div className="w-full max-w-full overflow-auto">
-            <div className="flex flex-col font-mono text-sm">
-              {members
-                .map((m) => api.createType("Member", m).toHex())
-                .map((m) => (
-                  <div className="" key={m}>
-                    {m}
-                  </div>
-                ))}
+        {members !== undefined && (
+          <div>
+            <h2 className="text-xl font-extrabold leading-6 tracking-tight">
+              {`Members (${members.length})`}
+            </h2>
+            <p className="break-all font-mono text-sm text-gray-500">
+              Public keys of members in set
+            </p>
+            <div className="w-full max-w-full overflow-auto">
+              <div className="flex flex-col font-mono text-sm">
+                {members
+                  .map((m) => api.createType("Member", m).toHex())
+                  .map((m) => (
+                    <div className="" key={m}>
+                      {m}
+                    </div>
+                  ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
         <div>
           <Button
             className="w-full"
@@ -209,8 +181,8 @@ export const Bandersnatch: React.FC = () => {
                 <div className="flex flex-col items-center justify-center text-sm text-muted-foreground">
                   {api.createType("Alias", validationData.alias).toHex() ==
                   api.createType("Alias", data.alias).toHex()
-                    ? "ALIAS EQUAL => Proof Valid"
-                    : "ALAIS NOT EQUAL => Proof Invalid"}
+                    ? "ALIASES EQUAL => Proof Valid"
+                    : "ALIASES NOT EQUAL => Proof Invalid"}
                 </div>
               </div>
             )}
