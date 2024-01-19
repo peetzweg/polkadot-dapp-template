@@ -1,12 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
-export function one_shot_trivial(a: number, b: number): number;
-export function new_secret_trivial(a: number): number;
-export function member_from_secret_trivial(a: number): number;
-export function open_trivial(a: number, b: number): number;
-export function create_trivial(a: number, b: number, c: number, d: number): void;
-export function validate_trivial(a: number, b: number, c: number, d: number): void;
 export function one_shot(a: number, b: number, c: number, d: number): number;
 export function validate(a: number, b: number, c: number, d: number): number;
 export function new_secret(a: number): number;
