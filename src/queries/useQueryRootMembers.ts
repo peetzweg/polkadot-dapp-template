@@ -17,7 +17,6 @@ export const useQueryRootMembers = () => {
 
       const memberKeys = []
       for (let page = 0; page < pages.toNumber(); page++) {
-        console.log("Fetching page", page, revision.toNumber())
         const pageOfKeys = await api.query.people.rootKeys([revision, page])
         memberKeys.push(...pageOfKeys)
       }

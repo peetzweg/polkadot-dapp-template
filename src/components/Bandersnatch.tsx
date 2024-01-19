@@ -1,6 +1,5 @@
-import { mnemonicGenerate, mnemonicToEntropy } from "@polkadot/util-crypto"
+import { mnemonicToEntropy } from "@polkadot/util-crypto"
 import { useMutation } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
 import { useApi } from "../providers/api-provider.js"
 import { useQueryMemberKey } from "../queries/useQueryMemberKey.js"
 import { useQueryRootMembers } from "../queries/useQueryRootMembers.js"
@@ -25,14 +24,15 @@ export const Bandersnatch: React.FC = () => {
   const {
     data,
     mutate: generateProof,
+    error,
     isPending,
   } = useMutation({
     mutationKey: [mnemonic],
     mutationFn: async () => {
       const memberVec = api.createType("MembersVec", members)
-      console.log({ memberVec, me, isReady })
+
       return verifiable.generateProof(
-        me!,
+        mnemonicToEntropy(mnemonic!),
         memberVec.toU8a(),
         Uint8Array.from([4, 3, 2, 1]),
         Uint8Array.from([1, 2, 3, 4]),
@@ -49,7 +49,6 @@ export const Bandersnatch: React.FC = () => {
       )
     },
   })
-  console.log({ data, isPending })
 
   const { data: validationData, mutate: validate } = useMutation({
     onError: (error) => {
@@ -120,6 +119,7 @@ export const Bandersnatch: React.FC = () => {
             </div>
           </div>
         )}
+        {error !== undefined && <div>{JSON.stringify(error)}</div>}
         <div>
           <Button
             className="w-full"

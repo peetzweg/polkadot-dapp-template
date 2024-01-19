@@ -49,7 +49,7 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly one_shot: (a: number, b: number, c: number, d: number) => number;
+  readonly one_shot: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly validate: (a: number, b: number, c: number, d: number) => number;
   readonly new_secret: (a: number) => number;
   readonly member_from_entropy: (a: number) => number;
@@ -59,6 +59,7 @@ export interface InitOutput {
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;
+  readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
