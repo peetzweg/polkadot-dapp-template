@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import { mnemonicToEntropy } from "@polkadot/util-crypto"
 import { IdCardIcon, ShadowInnerIcon } from "@radix-ui/react-icons"
-import { useQueryClient } from "@tanstack/react-query"
 import { useCallback } from "react"
 import { useExtrinsic } from "../lib/useExtrinsic.js"
 import { cn } from "../lib/utils.js"
@@ -32,13 +31,15 @@ export const RegisterAlias: React.FC<RegisterAliasProps> = ({ className }) => {
 
   const { data: members, isLoading } = useQueryRootMembers()
 
+  // TODO isPending is not enough as proof generation does take quite long, so pregen with Query
   const { mutateAsync: asPersonalAlias, isPending } = useExtrinsic(
     api.tx.people.asPersonalAlias,
   )
 
   const setAlias = useCallback(async () => {
     const setAlias = api.tx.people.setAliasAccount(pair!.address)
-    const message = setAlias.toU8a()
+    // TODO broken call data, byte prefix removal
+    const message = setAlias.toU8a().slice(2)
     const encodedMembers = api.createType("MembersVec", members).toU8a()
 
     const { proof, alias } = await verifiable.generateProof(
@@ -47,10 +48,9 @@ export const RegisterAlias: React.FC<RegisterAliasProps> = ({ className }) => {
       MOB_RULE_CONTEXT,
       message,
     )
+    console.log("alias", alias)
 
-    console.log({ proof, alias, message, encodedMembers })
-
-    // return asPersonalAlias([MOB_RULE_CONTEXT, setAlias, proof])
+    return asPersonalAlias([MOB_RULE_CONTEXT, message, proof])
   }, [api, asPersonalAlias, members, mnemonic, pair, verifiable])
 
   return (
