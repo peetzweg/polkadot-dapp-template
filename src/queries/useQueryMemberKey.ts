@@ -9,8 +9,6 @@ export const useQueryMemberKey = () => {
   const { pair, mnemonic } = useKeyringStore()
   const { verifiable, isReady } = useVerifiable()
 
-  if (!pair || !mnemonic) throw new Error("No pair or mnemonic")
-
   return useQuery({
     // Fine to disable as address is derived of required menmonic
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
@@ -18,6 +16,6 @@ export const useQueryMemberKey = () => {
     queryFn: async () => {
       return verifiable.memberFromEntropy(mnemonicToEntropy(mnemonic!))
     },
-    enabled: isReady,
+    enabled: isReady && !!pair && !!mnemonic,
   })
 }
