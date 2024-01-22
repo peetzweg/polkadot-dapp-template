@@ -9,8 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prettier": "prettier . --write",
     "preview": "vite preview",
-    "metadata:people": "./typegen.sh people https://pop-testnet.parity-lab.parity.io:443/9910",
-    "metadata:bulletin": "./typegen.sh bulletin https://pop-testnet.parity-lab.parity.io:443/10000"
+    "metadata:people": "source .env.local && ./typegen.sh people https://$VITE_RPC_PEOPLE",
+    "metadata:bulletin": "source .env.local && ./typegen.sh bulletin https://$VITE_RPC_BULLETIN"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",

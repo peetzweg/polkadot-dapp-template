@@ -1,22 +1,25 @@
 import { ApiPromise, WsProvider } from "@polkadot/api"
 import { create } from "zustand"
 
+const createPJSAppsLink = (rpc: string) =>
+  `https://polkadot.js.org/apps/?rpc=wss://${rpc}#/explorer`
+
 const Chains = {
   Rococo: {
-    pjs: "https://polkadot.js.org/apps/?rpc=wss://pop-testnet.parity-lab.parity.io/9942#/explorer",
-    rpc: "wss://pop-testnet.parity-lab.parity.io:443/9942",
+    pjs: createPJSAppsLink(import.meta.env.VITE_RPC_ROCOCO),
+    rpc: `wss://${import.meta.env.VITE_RPC_ROCOCO}`,
   },
   BridgeHub: {
-    pjs: "https://polkadot.js.org/apps/?rpc=wss://pop-testnet.parity-lab.parity.io/8943#/explorer",
-    rpc: "wss://pop-testnet.parity-lab.parity.io:443/8943",
+    pjs: createPJSAppsLink(import.meta.env.VITE_RPC_BRIDGE_HUB),
+    rpc: `wss://${import.meta.env.VITE_RPC_BRIDGE_HUB}`,
   },
   People: {
-    pjs: "https://polkadot.js.org/apps/?rpc=wss://pop-testnet.parity-lab.parity.io/9910#/explorer",
-    rpc: "wss://pop-testnet.parity-lab.parity.io:443/9910",
+    pjs: createPJSAppsLink(import.meta.env.VITE_RPC_PEOPLE),
+    rpc: `wss://${import.meta.env.VITE_RPC_PEOPLE}`,
   },
   Bulletin: {
-    pjs: "https://polkadot.js.org/apps/?rpc=wss://pop-testnet.parity-lab.parity.io/10000#/explorer",
-    rpc: "wss://pop-testnet.parity-lab.parity.io:443/10000",
+    pjs: createPJSAppsLink(import.meta.env.VITE_RPC_BULLETIN),
+    rpc: `wss://${import.meta.env.VITE_RPC_BULLETIN}`,
   },
 } as const
 
