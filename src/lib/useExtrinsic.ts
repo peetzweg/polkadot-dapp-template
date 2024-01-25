@@ -30,7 +30,9 @@ export const useExtrinsicAs = <
   extrinsicFn: TExtrinsicFn,
   addressOrPair: AddressOrPair,
 ): UseMutationResult<void, Error, Parameters<TExtrinsicFn>, void> => {
+  // TODO should not use api here, should use the API from the given extrinsicFn
   const { api } = useApi()
+
   return useMutation({
     mutationKey: [addressOrPair, extrinsicFn.meta.name],
     onSuccess: () => {

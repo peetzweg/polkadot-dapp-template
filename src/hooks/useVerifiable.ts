@@ -1,7 +1,7 @@
 import * as Comlink from "comlink"
 import { useEffect, useMemo, useState } from "react"
-import { VerifiableWorker } from "./verifiable-worker.js"
-import verifiableWorkerUrl from "./verifiable-worker?worker&url"
+import { type VerifiableWorker } from "../workers/verifiable-worker.js"
+import verifiableWorkerUrl from "../workers/verifiable-worker?worker&url"
 
 export const useVerifiable = () => {
   const [isReady, setReady] = useState(false)

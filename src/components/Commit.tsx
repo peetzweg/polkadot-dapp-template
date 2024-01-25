@@ -10,8 +10,8 @@ import { useApi } from "../providers/api-provider.js"
 import {
   QUERY_KEY as QUERY_KEY_CANDIDATE_STATE,
   useQueryCandidateState,
-} from "../queries/useQueryCandidateState.js"
-import { useQueryDesignFamilies } from "../queries/useQueryDesignFamilies.js"
+} from "../hooks/useQueryCandidateState.js"
+import { useQueryDesignFamilies } from "../hooks/useQueryDesignFamilies.js"
 import { Button } from "./ui/button.js"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form"
 import { Input } from "./ui/input.js"

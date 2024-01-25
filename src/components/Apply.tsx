@@ -7,7 +7,7 @@ import { useApi } from "../providers/api-provider.js"
 import {
   QUERY_KEY,
   useQueryCandidateState,
-} from "../queries/useQueryCandidateState.js"
+} from "../hooks/useQueryCandidateState.js"
 import { Button } from "./ui/button.js"
 import { useQuery } from "@tanstack/react-query"
 

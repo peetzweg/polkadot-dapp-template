@@ -1,8 +1,8 @@
 import { useMemo } from "react"
 import { cn } from "../lib/utils.js"
-import { useQueryMobRuleState } from "../queries/useQueryMobRuleState.js"
+import { useQueryMobRuleState } from "../hooks/useQueryMobRuleState.js"
 import { Textarea } from "./ui/textarea.js"
-import { useQueryCandidateState } from "../queries/useQueryCandidateState.js"
+import { useQueryCandidateState } from "../hooks/useQueryCandidateState.js"
 import { useApi } from "../providers/api-provider.js"
 import { u8aToHex } from "@polkadot/util"
 

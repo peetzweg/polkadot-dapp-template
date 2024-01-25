@@ -2,7 +2,7 @@ import init, {
   one_shot,
   validate,
   member_from_entropy,
-} from "../wasm/pkg/verifiable.js"
+} from "./verifiable/verifiable.js"
 
 import * as Comlink from "comlink"
 
@@ -46,7 +46,6 @@ const verifiable: {
     context: Uint8Array,
     message: Uint8Array,
   ): ValidateResults => {
-    console.log({ proof, members, context, message })
     const alias = validate(proof, members, context, message)
     return {
       alias,

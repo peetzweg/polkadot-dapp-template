@@ -15,8 +15,9 @@ import { useApi } from "../providers/api-provider.js"
 import {
   QUERY_KEY as QUERY_KEY_CANDIDATE_STATE,
   useQueryCandidateState,
-} from "../queries/useQueryCandidateState.js"
+} from "../hooks/useQueryCandidateState.js"
 
+import { useQueryStorageAuthorizations } from "../hooks/useQueryStorageAuthorizations.ts"
 import { useChain } from "../state/chains.js"
 import { AspectRatio } from "./ui/aspect-ratio.js"
 import { Button } from "./ui/button.js"
@@ -35,6 +36,7 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
   const { Bulletin } = useChain()
   const [file, setFile] = useState<File | undefined>(undefined)
   const [hash, setHash] = useState<string | undefined>(undefined)
+  const [bytes, setBytes] = useState<Uint8Array | undefined>(undefined)
 
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,9 +44,8 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
   })
 
   const { data: candidate } = useQueryCandidateState()
-  // TODO work with authorizations here, not decoding correctly atm.
-  // const { data: authorizations } = useQueryStorageAuthorizations()
-  // console.log({ authorizations })
+
+  const { data: authorizations } = useQueryStorageAuthorizations()
 
   const { mutateAsync: store } = useExtrinsic(
     Bulletin.api.tx.transactionStorage.store,
@@ -68,15 +69,19 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
       // Task: get blake2 of file
       const buffer = await evidence[0].arrayBuffer()
       const bytes = new Uint8Array(buffer)
-      console.log({ bytes })
+      setBytes(bytes)
 
       // TODO: maybe this needs to be done in a service worker for bigger files?
       const blake2HashOfFile = u8aToHex(blake2AsU8a(bytes))
       setHash(blake2HashOfFile)
-      console.log({ blake2HashOfFile })
 
       // Task: Submit evidence bytes to bulletin chain
-      // await store([bytes])
+      // TODO bytes is broken here, not handled correctly by the api
+      // await store([bytes], {
+      //   onSuccess: (e) => {
+      //     console.log("data stored", e)
+      //   },
+      // })
 
       // Task: submit hash of evidence to ProofOfInk
       return submitEvidence([blake2HashOfFile], {
@@ -87,7 +92,7 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
         },
       })
     },
-    [queryClient, store, submitEvidence],
+    [queryClient, submitEvidence],
   )
 
   const onChange = useCallback((event: React.FormEvent<HTMLInputElement>) => {
@@ -142,7 +147,14 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
           </>
         )}
 
-        {hash && <code className="break-words">{hash}</code>}
+        {hash && (
+          <>
+            <h1>blake2b</h1>
+            <code className="break-words">{hash}</code>
+          </>
+        )}
+        {/* <h1>bytes</h1>
+        {bytes && <code className="break-words">{u8aToHex(bytes)}</code>} */}
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}

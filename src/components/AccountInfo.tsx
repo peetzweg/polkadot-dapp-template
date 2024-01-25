@@ -1,7 +1,7 @@
 import { formatBalance } from "../lib/formatBalance.js"
 import { cn } from "../lib/utils.js"
 import { useApi } from "../providers/api-provider.js"
-import { useQueryAccount } from "../queries/useQueryAccount.js"
+import { useQueryAccount } from "../hooks/useQueryAccount.js"
 import { useKeyringStore } from "../state/keyring.js"
 import { Button } from "./ui/button.js"
 import { Textarea } from "./ui/textarea.js"

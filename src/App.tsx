@@ -15,7 +15,7 @@ import { Register } from "./components/Register"
 import { RegisterAlias } from "./components/RegisterAlias"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { RequireApi } from "./components/helpers/RequireApi"
-import { useQueryPersonalId } from "./queries/useQueryPersonalId"
+import { useQueryPersonalId } from "./hooks/useQueryPersonalId"
 import { useKeyringStore } from "./state/keyring"
 
 function App() {

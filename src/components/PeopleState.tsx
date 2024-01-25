@@ -1,5 +1,5 @@
 import { cn } from "../lib/utils.js"
-import { useQueryRootMembers } from "../queries/useQueryRootMembers.js"
+import { useQueryRootMembers } from "../hooks/useQueryRootMembers.js"
 import { Textarea } from "./ui/textarea.js"
 
 interface PeopleStateProps {

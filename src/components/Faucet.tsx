@@ -26,7 +26,7 @@ import { cn } from "../lib/utils.js"
 import {
   QUERY_KEY as ACCOUNT_QUERY_KEY,
   useQueryAccount,
-} from "../queries/useQueryAccount.js"
+} from "../hooks/useQueryAccount.js"
 
 const formSchema = z.object({
   receiver: z.string().min(2).max(50),

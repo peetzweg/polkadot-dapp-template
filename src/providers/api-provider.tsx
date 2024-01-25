@@ -31,9 +31,9 @@ export function APIProvider({ children, ...props }: APIProviderProps) {
   const [api, setApi] = useState<APIProviderState>(initialState)
 
   const [wsProvider, rpcURL] = useMemo(() => {
-    const rpcURL = import.meta.env.VITE_DEFAULT_RPC
+    const rpcURL = import.meta.env.VITE_RPC_PEOPLE
     if (!rpcURL) throw Error("No RPC URL provided, check ENVIRONMENT.")
-    return [new WsProvider(rpcURL), rpcURL]
+    return [new WsProvider(`wss://${rpcURL}`), rpcURL]
   }, [])
 
   useEffect(() => {

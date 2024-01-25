@@ -19,6 +19,7 @@ export const useQueryMobRuleState = () => {
     ],
     queryFn: async () => {
       const judgingId = candidate?.asSelected.judging.unwrapOrDefault()
+      console.log({ judgingId })
       if (!judgingId) throw Error("No judging available")
 
       const mobRuleCase = await api.query.mobRule.cases(judgingId)
