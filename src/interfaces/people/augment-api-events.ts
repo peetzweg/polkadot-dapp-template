@@ -8,7 +8,7 @@ import '@polkadot/api-base/types/events';
 import type { ApiTypes, AugmentedEvent } from '@polkadot/api-base/types';
 import type { Null, Option, Result, U8aFixed, Vec, bool, u128, u32, u64, u8 } from '@polkadot/types-codec';
 import type { AccountId32, H256 } from '@polkadot/types/interfaces/runtime';
-import type { ArkScale, CumulusPrimitivesCoreAggregateMessageOrigin, FrameSupportDispatchDispatchInfo, FrameSupportMessagesProcessMessageError, FrameSupportTokensMiscBalanceStatus, PalletMultisigTimepoint, SpRuntimeDispatchError, SpWeightsWeightV2Weight, StagingXcmV3MultiLocation, XcmV3MultiassetMultiAssets, XcmV3Response, XcmV3TraitsError, XcmV3TraitsOutcome, XcmV3Xcm, XcmVersionedMultiAssets, XcmVersionedMultiLocation } from '@polkadot/types/lookup';
+import type { CumulusPrimitivesCoreAggregateMessageOrigin, FrameSupportDispatchDispatchInfo, FrameSupportMessagesProcessMessageError, FrameSupportTokensMiscBalanceStatus, PalletMultisigTimepoint, SpRuntimeDispatchError, SpWeightsWeightV2Weight, StagingXcmV3MultiLocation, VerifiableRingVrfImplEncodedPublicKey, XcmV3MultiassetMultiAssets, XcmV3Response, XcmV3TraitsError, XcmV3TraitsOutcome, XcmV3Xcm, XcmVersionedMultiAssets, XcmVersionedMultiLocation } from '@polkadot/types/lookup';
 
 export type __AugmentedEvent<ApiType extends ApiTypes> = AugmentedEvent<ApiType>;
 
@@ -324,19 +324,19 @@ declare module '@polkadot/api-base/types/events' {
       /**
        * A person has changed their key from `maybe_old` to `new`.
        **/
-      KeyMigrated: AugmentedEvent<ApiType, [who: u64, maybeOld: Option<ArkScale>, new_: ArkScale], { who: u64, maybeOld: Option<ArkScale>, new_: ArkScale }>;
+      KeyMigrated: AugmentedEvent<ApiType, [who: u64, maybeOld: Option<VerifiableRingVrfImplEncodedPublicKey>, new_: VerifiableRingVrfImplEncodedPublicKey], { who: u64, maybeOld: Option<VerifiableRingVrfImplEncodedPublicKey>, new_: VerifiableRingVrfImplEncodedPublicKey }>;
       /**
        * An individual has had their personhood recognised and indexed.
        **/
-      PersonhoodRecognized: AugmentedEvent<ApiType, [who: u64, maybeKey: Option<ArkScale>], { who: u64, maybeKey: Option<ArkScale> }>;
+      PersonhoodRecognized: AugmentedEvent<ApiType, [who: u64, maybeKey: Option<VerifiableRingVrfImplEncodedPublicKey>], { who: u64, maybeKey: Option<VerifiableRingVrfImplEncodedPublicKey> }>;
       /**
        * An individual has had their personhood recognised and indexed.
        **/
-      PersonhoodResumed: AugmentedEvent<ApiType, [who: u64, maybeKey: Option<ArkScale>], { who: u64, maybeKey: Option<ArkScale> }>;
+      PersonhoodResumed: AugmentedEvent<ApiType, [who: u64, maybeKey: Option<VerifiableRingVrfImplEncodedPublicKey>], { who: u64, maybeKey: Option<VerifiableRingVrfImplEncodedPublicKey> }>;
       /**
        * Recognition of personhood has been suspended.
        **/
-      PersonhoodSuspended: AugmentedEvent<ApiType, [who: u64, maybeOld: Option<ArkScale>], { who: u64, maybeOld: Option<ArkScale> }>;
+      PersonhoodSuspended: AugmentedEvent<ApiType, [who: u64, maybeOld: Option<VerifiableRingVrfImplEncodedPublicKey>], { who: u64, maybeOld: Option<VerifiableRingVrfImplEncodedPublicKey> }>;
       /**
        * Generic event
        **/

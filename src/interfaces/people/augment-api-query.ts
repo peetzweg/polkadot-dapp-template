@@ -10,7 +10,7 @@ import type { Data } from '@polkadot/types';
 import type { BTreeMap, BTreeSet, Bytes, Option, Struct, U8aFixed, Vec, bool, u128, u16, u32, u64 } from '@polkadot/types-codec';
 import type { AnyNumber, ITuple } from '@polkadot/types-codec/types';
 import type { AccountId32, H256 } from '@polkadot/types/interfaces/runtime';
-import type { ArkScale, CumulusPalletParachainSystemCodeUpgradeAuthorization, CumulusPalletParachainSystemRelayStateSnapshotMessagingStateSnapshot, CumulusPalletParachainSystemUnincludedSegmentAncestor, CumulusPalletParachainSystemUnincludedSegmentSegmentTracker, CumulusPalletXcmpQueueOutboundChannelDetails, CumulusPalletXcmpQueueQueueConfigData, CumulusPrimitivesCoreAggregateMessageOrigin, FrameSupportDispatchPerDispatchClassWeight, FrameSupportRealityContextualAlias, FrameSupportRealityJudgement, FrameSystemAccountInfo, FrameSystemEventRecord, FrameSystemLastRuntimeUpgradeInfo, FrameSystemPhase, PalletBalancesAccountData, PalletBalancesBalanceLock, PalletBalancesIdAmount, PalletBalancesReserveData, PalletCollatorSelectionCandidateInfo, PalletIdentityRegistrarInfo, PalletIdentityRegistration, PalletMessageQueueBookState, PalletMessageQueuePage, PalletMobRuleCase, PalletMobRuleMobCredit, PalletMultisigMultisig, PalletPeopleBuilder, PalletPeoplePersonRecord, PalletProofOfInkCandidate, PalletProofOfInkConfigRecord, PalletProofOfInkFamilyKind, PalletProofOfInkPerson, PalletTransactionPaymentReleases, PeopleRococoRuntimeRuntimeHoldReason, PeopleRococoRuntimeSessionKeys, PolkadotCorePrimitivesOutboundHrmpMessage, PolkadotPrimitivesV6AbridgedHostConfiguration, PolkadotPrimitivesV6PersistedValidationData, PolkadotPrimitivesV6UpgradeGoAhead, PolkadotPrimitivesV6UpgradeRestriction, SpConsensusAuraSr25519AppSr25519Public, SpCoreCryptoKeyTypeId, SpRuntimeDigest, SpTrieStorageProof, SpWeightsWeightV2Weight } from '@polkadot/types/lookup';
+import type { ArkScale, CumulusPalletParachainSystemCodeUpgradeAuthorization, CumulusPalletParachainSystemRelayStateSnapshotMessagingStateSnapshot, CumulusPalletParachainSystemUnincludedSegmentAncestor, CumulusPalletParachainSystemUnincludedSegmentSegmentTracker, CumulusPalletXcmpQueueOutboundChannelDetails, CumulusPalletXcmpQueueQueueConfigData, CumulusPrimitivesCoreAggregateMessageOrigin, FrameSupportDispatchPerDispatchClassWeight, FrameSupportRealityContextualAlias, FrameSupportRealityJudgement, FrameSystemAccountInfo, FrameSystemEventRecord, FrameSystemLastRuntimeUpgradeInfo, FrameSystemPhase, PalletBalancesAccountData, PalletBalancesBalanceLock, PalletBalancesIdAmount, PalletBalancesReserveData, PalletCollatorSelectionCandidateInfo, PalletIdentityRegistrarInfo, PalletIdentityRegistration, PalletMessageQueueBookState, PalletMessageQueuePage, PalletMobRuleCase, PalletMobRuleMobCredit, PalletMultisigMultisig, PalletPeopleBuilder, PalletPeoplePersonRecord, PalletProofOfInkCandidate, PalletProofOfInkConfigRecord, PalletProofOfInkFamilyKind, PalletProofOfInkPerson, PalletTransactionPaymentReleases, PeopleRococoRuntimeRuntimeHoldReason, PeopleRococoRuntimeSessionKeys, PolkadotCorePrimitivesOutboundHrmpMessage, PolkadotPrimitivesV6AbridgedHostConfiguration, PolkadotPrimitivesV6PersistedValidationData, PolkadotPrimitivesV6UpgradeGoAhead, PolkadotPrimitivesV6UpgradeRestriction, SpConsensusAuraSr25519AppSr25519Public, SpCoreCryptoKeyTypeId, SpRuntimeDigest, SpTrieStorageProof, SpWeightsWeightV2Weight, VerifiableRingVrfImplEncodedPublicKey } from '@polkadot/types/lookup';
 import type { Observable } from '@polkadot/types/types';
 
 export type __AugmentedQuery<ApiType extends ApiTypes> = AugmentedQuery<ApiType, () => unknown>;
@@ -428,7 +428,7 @@ declare module '@polkadot/api-base/types/storage' {
        * The current individuals we recognise: lookup from the crypto (public) key into the immutable
        * ID of the individual.
        **/
-      keys: AugmentedQuery<ApiType, (arg: Bytes | string | Uint8Array) => Observable<Option<u64>>, [Bytes]> & QueryableStorageEntry<ApiType, [Bytes]>;
+      keys: AugmentedQuery<ApiType, (arg: VerifiableRingVrfImplEncodedPublicKey | string | Uint8Array) => Observable<Option<u64>>, [VerifiableRingVrfImplEncodedPublicKey]> & QueryableStorageEntry<ApiType, [VerifiableRingVrfImplEncodedPublicKey]>;
       /**
        * The current individuals we recognise: immutable ID of the individual into various
        * information about their status.
@@ -445,7 +445,7 @@ declare module '@polkadot/api-base/types/storage' {
       /**
        * The key pages.
        **/
-      rootKeys: AugmentedQuery<ApiType, (arg: ITuple<[u32, u32]> | [u32 | AnyNumber | Uint8Array, u32 | AnyNumber | Uint8Array]) => Observable<Vec<Bytes>>, [ITuple<[u32, u32]>]> & QueryableStorageEntry<ApiType, [ITuple<[u32, u32]>]>;
+      rootKeys: AugmentedQuery<ApiType, (arg: ITuple<[u32, u32]> | [u32 | AnyNumber | Uint8Array, u32 | AnyNumber | Uint8Array]) => Observable<Vec<VerifiableRingVrfImplEncodedPublicKey>>, [ITuple<[u32, u32]>]> & QueryableStorageEntry<ApiType, [ITuple<[u32, u32]>]>;
       /**
        * The current identities which have been suspended from personhood. We're no longer confident
        * that there is a unique individual behind each one.

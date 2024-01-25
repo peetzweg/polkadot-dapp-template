@@ -10,7 +10,7 @@ import type { Data } from '@polkadot/types';
 import type { Bytes, Compact, Option, U8aFixed, Vec, bool, u128, u16, u32, u64 } from '@polkadot/types-codec';
 import type { AnyNumber, IMethod, ITuple } from '@polkadot/types-codec/types';
 import type { AccountId32, Call, H256, MultiAddress } from '@polkadot/types/interfaces/runtime';
-import type { CumulusPrimitivesCoreAggregateMessageOrigin, CumulusPrimitivesParachainInherentParachainInherentData, FrameSupportRealityJudgement, PalletIdentityJudgement, PalletMultisigTimepoint, PalletProofOfInkFamilyKind, PalletProofOfInkInkChoice, PeopleRococoRuntimeOriginCaller, PeopleRococoRuntimePeopleIdentityInfo, PeopleRococoRuntimeSessionKeys, SpWeightsWeightV2Weight, StagingXcmV3MultiLocation, XcmV3WeightLimit, XcmVersionedMultiAssets, XcmVersionedMultiLocation, XcmVersionedXcm } from '@polkadot/types/lookup';
+import type { CumulusPrimitivesCoreAggregateMessageOrigin, CumulusPrimitivesParachainInherentParachainInherentData, FrameSupportRealityJudgement, PalletIdentityJudgement, PalletMultisigTimepoint, PalletProofOfInkFamilyKind, PalletProofOfInkInkChoice, PeopleRococoRuntimeOriginCaller, PeopleRococoRuntimePeopleIdentityInfo, PeopleRococoRuntimeSessionKeys, SpWeightsWeightV2Weight, StagingXcmV3MultiLocation, VerifiableRingVrfImplEncodedPublicKey, XcmV3WeightLimit, XcmVersionedMultiAssets, XcmVersionedMultiLocation, XcmVersionedXcm } from '@polkadot/types/lookup';
 
 export type __AugmentedSubmittable = AugmentedSubmittable<() => unknown>;
 export type __SubmittableExtrinsic<ApiType extends ApiTypes> = SubmittableExtrinsic<ApiType>;
@@ -278,7 +278,7 @@ declare module '@polkadot/api-base/types/submittable' {
       /**
        * See [`Pallet::migrate_key`].
        **/
-      migrateKey: AugmentedSubmittable<(updated: Bytes | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [Bytes]>;
+      migrateKey: AugmentedSubmittable<(updated: VerifiableRingVrfImplEncodedPublicKey | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [VerifiableRingVrfImplEncodedPublicKey]>;
       /**
        * See [`Pallet::push_member`].
        **/
@@ -295,6 +295,10 @@ declare module '@polkadot/api-base/types/submittable' {
        * See [`Pallet::set_alias_account`].
        **/
       setAliasAccount: AugmentedSubmittable<(account: AccountId32 | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [AccountId32]>;
+      /**
+       * See [`Pallet::set_root_expiry`].
+       **/
+      setRootExpiry: AugmentedSubmittable<(rootExpiry: Option<u32> | null | Uint8Array | u32 | AnyNumber) => SubmittableExtrinsic<ApiType>, [Option<u32>]>;
       /**
        * See [`Pallet::under_alias`].
        **/
@@ -406,7 +410,7 @@ declare module '@polkadot/api-base/types/submittable' {
       /**
        * See [`Pallet::register`].
        **/
-      register: AugmentedSubmittable<(key: Bytes | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [Bytes]>;
+      register: AugmentedSubmittable<(key: VerifiableRingVrfImplEncodedPublicKey | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [VerifiableRingVrfImplEncodedPublicKey]>;
       /**
        * See [`Pallet::reroll`].
        **/
