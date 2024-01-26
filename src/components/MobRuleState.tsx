@@ -27,7 +27,9 @@ export const MobRuleState: React.FC<MobRuleStateProps> = ({ className }) => {
   const interveneCall = useMemo(() => {
     if (judgingId === undefined) return undefined
     return u8aToHex(
-      api.tx.mobRule.intervene(judgingId, { Truth: "ConfidentTrue" }).toU8a(),
+      api.tx.mobRule
+        .intervene(judgingId, { Truth: "ConfidentTrue" })
+        .method.toU8a(),
     )
   }, [api.tx.mobRule, judgingId])
 

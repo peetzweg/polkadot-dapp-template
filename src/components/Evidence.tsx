@@ -36,7 +36,6 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
   const { Bulletin } = useChain()
   const [file, setFile] = useState<File | undefined>(undefined)
   const [hash, setHash] = useState<string | undefined>(undefined)
-  const [bytes, setBytes] = useState<Uint8Array | undefined>(undefined)
 
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
@@ -68,20 +67,22 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
 
       // Task: get blake2 of file
       const buffer = await evidence[0].arrayBuffer()
-      const bytes = new Uint8Array(buffer)
-      setBytes(bytes)
+      const plainBytes = new Uint8Array(buffer)
+
+      const encodedBytes = Bulletin.api.registry
+        .createType("Bytes", u8aToHex(plainBytes))
+        .toU8a()
 
       // TODO: maybe this needs to be done in a service worker for bigger files?
-      const blake2HashOfFile = u8aToHex(blake2AsU8a(bytes))
+      const blake2HashOfFile = u8aToHex(blake2AsU8a(plainBytes))
       setHash(blake2HashOfFile)
 
       // Task: Submit evidence bytes to bulletin chain
-      // TODO bytes is broken here, not handled correctly by the api
-      // await store([bytes], {
-      //   onSuccess: (e) => {
-      //     console.log("data stored", e)
-      //   },
-      // })
+      await store([encodedBytes], {
+        onSuccess: (e) => {
+          console.log("data stored", e)
+        },
+      })
 
       // Task: submit hash of evidence to ProofOfInk
       return submitEvidence([blake2HashOfFile], {
@@ -92,7 +93,7 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
         },
       })
     },
-    [queryClient, submitEvidence],
+    [Bulletin.api.registry, queryClient, store, submitEvidence],
   )
 
   const onChange = useCallback((event: React.FormEvent<HTMLInputElement>) => {
@@ -153,8 +154,6 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
             <code className="break-words">{hash}</code>
           </>
         )}
-        {/* <h1>bytes</h1>
-        {bytes && <code className="break-words">{u8aToHex(bytes)}</code>} */}
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
