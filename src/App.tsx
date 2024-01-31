@@ -6,6 +6,7 @@ import { CandidateState } from "./components/CandidateState"
 import { ChainStatus } from "./components/ChainStatus"
 import { Commit } from "./components/Commit"
 import { ConnectionIndicator } from "./components/ConnectionIndicator"
+import { DeveloperConsole } from "./components/DeveloperConsole"
 import { Evidence } from "./components/Evidence"
 import { Faucet } from "./components/Faucet"
 import { MobRuleState } from "./components/MobRuleState"
@@ -53,6 +54,7 @@ const AppWithPair = () => {
   return (
     <div className="flex flex-col gap-4 px-4 py-2">
       <div className="auto-rows grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <DeveloperConsole />
         <ChainStatus />
         <Faucet />
         <AccountInfo />

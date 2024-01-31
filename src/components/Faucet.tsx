@@ -27,6 +27,7 @@ import {
   QUERY_KEY as ACCOUNT_QUERY_KEY,
   useQueryAccount,
 } from "../hooks/useQueryAccount.js"
+import { useAliceKeyPair, useAliceKeyring } from "../hooks/useAliceKeyPair.js"
 
 const formSchema = z.object({
   receiver: z.string().min(2).max(50),
@@ -39,7 +40,7 @@ interface FaucetProps {
 
 export const Faucet: React.FC<FaucetProps> = ({ className }) => {
   const { api, decimals, symbol } = useApi()
-  const { keyring, pair: currentPair } = useKeyringStore()
+  const { pair: currentPair } = useKeyringStore()
   const queryClient = useQueryClient()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,9 +51,7 @@ export const Faucet: React.FC<FaucetProps> = ({ className }) => {
     },
   })
 
-  const aliceKeyPair = useMemo(() => {
-    return keyring.createFromUri("//Alice")
-  }, [keyring])
+  const aliceKeyPair = useAliceKeyPair()
 
   const { data } = useQueryAccount(aliceKeyPair.address)
 
