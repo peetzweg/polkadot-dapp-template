@@ -23,8 +23,6 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      // this is the package name we use (in the interface imports, --package for generators)
-      "people-typegen/*": ["src/*"],
     }
   },
   "include": ["src"],

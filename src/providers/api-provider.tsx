@@ -1,5 +1,4 @@
 import { ApiPromise, WsProvider } from "@polkadot/api"
-import "@polkadot/api-augment"
 import { cryptoWaitReady } from "@polkadot/util-crypto"
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
 interface APIProviderProps {

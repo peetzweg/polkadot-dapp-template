@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useQuery } from "@tanstack/react-query"
 import { useChain } from "../state/chains"
 import { useKeyringStore } from "../state/keyring"
@@ -10,12 +9,15 @@ export const useQueryStorageAuthorizations = () => {
   const { pair } = useKeyringStore()
 
   return useQuery({
-    queryKey: [...QUERY_KEY],
+    queryKey: [...QUERY_KEY, pair?.address],
     queryFn: async () => {
-      const auths = Bulletin.api.query.transactionStorage.authorizations({
-        Account: Bulletin.api.createType("AccountId", pair?.address),
-      })
-      return auths
+      const authorization =
+        await Bulletin.api.query.transactionStorage.authorizations({
+          Account: Bulletin.api.createType("AccountId", pair?.address),
+        })
+      if (authorization.isNone) return undefined
+
+      return authorization.unwrap()
     },
   })
 }
