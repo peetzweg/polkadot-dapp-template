@@ -4,7 +4,7 @@ import { useKeyringStore } from "../state/keyring"
 
 export const QUERY_KEY = ["bulletin", "transactionStorage", "authorizations"]
 
-export const useQueryStorageAuthorizations = () => {
+export const useQueryStorageAuthorization = () => {
   const { Bulletin } = useChain()
   const { pair } = useKeyringStore()
 

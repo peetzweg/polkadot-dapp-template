@@ -6,16 +6,15 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import * as z from "zod"
-import { useExtrinsic } from "../lib/useExtrinsic.js"
-import { cn } from "../lib/utils.js"
-import { useApi } from "../providers/api-provider.js"
-
 import {
   QUERY_KEY as QUERY_KEY_CANDIDATE_STATE,
   useQueryCandidateState,
 } from "../hooks/useQueryCandidateState.js"
+import { useExtrinsic } from "../lib/useExtrinsic.js"
+import { cn } from "../lib/utils.js"
+import { useApi } from "../providers/api-provider.js"
 
-import { useQueryStorageAuthorizations } from "../hooks/useQueryStorageAuthorizations.ts"
+import { useQueryStorageAuthorization } from "../hooks/useQueryStorageAuthorization.ts"
 import { useChain } from "../state/chains.js"
 import { AspectRatio } from "./ui/aspect-ratio.js"
 import { Button } from "./ui/button.js"
@@ -42,7 +41,7 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
 
   const { data: candidate } = useQueryCandidateState()
 
-  const { data: authorizations } = useQueryStorageAuthorizations()
+  const { data: authorization } = useQueryStorageAuthorization()
 
   const { mutateAsync: store } = useExtrinsic(
     Bulletin.api.tx.transactionStorage.store,
@@ -55,6 +54,9 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
     async ({ evidence }) => {
       if (evidence?.[0] === undefined) {
         throw new Error("No evidence provided")
+      }
+      if (authorization === undefined) {
+        throw new Error("No authorization to store data")
       }
 
       // Task: Check if size is in limits
@@ -91,7 +93,7 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
         },
       })
     },
-    [Bulletin.api.registry, queryClient, store, submitEvidence],
+    [Bulletin.api.registry, authorization, queryClient, store, submitEvidence],
   )
 
   const onChange = useCallback((event: React.FormEvent<HTMLInputElement>) => {
@@ -134,15 +136,27 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
           <code>ProofOfInk::submit_evidence(hash)</code>
         </div>
 
-        {file && (
-          <>
-            <AspectRatio
-              ratio={1 / 1}
-              className="flex items-center justify-center overflow-hidden"
-            >
+        <AspectRatio
+          ratio={1 / 1}
+          className="flex items-center justify-center overflow-hidden rounded border border-dashed p-1"
+        >
+          {file && (
+            <>
               <img src={URL.createObjectURL(file)} />
-            </AspectRatio>
-            <code>{(file.size / 1_000_000).toFixed(2)} MB</code>
+            </>
+          )}
+        </AspectRatio>
+
+        {file && authorization && (
+          <>
+            <code>
+              {(file.size / 1_000_000).toFixed(2)}/
+              {(authorization.extent.bytes.toNumber() / 1_000_000).toFixed(2)}{" "}
+              MB
+            </code>
+            <code>
+              Expiring in/at block?: {authorization.expiration.toNumber()}
+            </code>
           </>
         )}
 
@@ -165,24 +179,6 @@ export const Evidence: React.FC<EvidenceProps> = ({ className }) => {
             type="file"
           />
 
-          {/* <div className="flex h-32 items-center justify-center gap-2 rounded border border-dashed">
-              <FormField
-                control={form.control}
-                name="evidence"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <input
-                        className="cursor-pointer"
-                        type="file"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div> */}
           <Button
             type="submit"
             disabled={
