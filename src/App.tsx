@@ -75,8 +75,13 @@ const AppWithPair = () => {
           </>
         )}
       </div>
-      <hr className="my-10" />
-      {personalId !== undefined && <Bandersnatch />}
+
+      {personalId !== undefined && (
+        <>
+          <hr className="my-10" />
+          <Bandersnatch />
+        </>
+      )}
     </div>
   )
 }

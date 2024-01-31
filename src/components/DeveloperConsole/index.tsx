@@ -1,6 +1,7 @@
 import { cn } from "../../lib/utils.js"
 import { AddDesignFamily } from "./AddDesignFamily.js"
 import { InterveneMobRule } from "./InterveneMobRule.js"
+import { RefreshRoot } from "./RefreshRoot.js"
 
 interface CommitProps {
   className?: string
@@ -22,10 +23,10 @@ export const DeveloperConsole: React.FC<CommitProps> = ({ className }) => {
           <code>//Alice</code>
         </div>
 
-        <div>
+        <div className="flex flex-col items-start gap-4">
           <AddDesignFamily />
           <InterveneMobRule />
-          <div>Refresh Root</div>
+          <RefreshRoot />
         </div>
       </div>
     </div>

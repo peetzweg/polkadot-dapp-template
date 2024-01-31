@@ -34,7 +34,7 @@ const formSchema = z.object({
     .string()
     .min(1)
     .max(3)
-    .refine((v) => !!Number(v), "Not a number")
+    .refine((v) => typeof Number(v) === "number", "Not a number")
     .refine(
       (v) => Number(v) >= 0 && Number(v) <= 255,
       "Should be between 0-255",
@@ -71,7 +71,7 @@ export const InterveneMobRule: React.FC = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mt-4 flex w-full flex-row items-center gap-4"
+        className="flex w-full flex-row items-center gap-4"
       >
         <div className="flex flex-row items-center justify-center gap-2">
           <FormField
