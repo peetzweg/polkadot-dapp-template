@@ -32,19 +32,19 @@ export const useExtrinsicAs = <
 ): UseMutationResult<void, Error, Parameters<TExtrinsicFn>, void> => {
   // TODO should not use api here, should use the API from the given extrinsicFn
   const { api } = useApi()
+  extrinsicFn.meta.registry.findMetaEvent
 
   return useMutation({
     mutationKey: [addressOrPair, extrinsicFn.meta.name],
-    onSuccess: () => {
-      toast.success(
-        `Success: ${extrinsicFn.section}::${extrinsicFn.meta.name}`,
-        { position: "bottom-center" },
-      )
-      console.log("success")
+    onSuccess: (...args) => {
+      toast.success(`Success: ${extrinsicFn.section}::${extrinsicFn.meta.name}`)
+      console.info("Success:", args)
     },
     onError: (error: Error) => {
-      toast.error(JSON.stringify(error.message))
-      console.log("error", error)
+      toast.error(
+        `Error: ${extrinsicFn.section}::${extrinsicFn.meta.name}\n${JSON.stringify(error.message)}`,
+      )
+      console.error("Error:", error)
     },
     mutationFn: (args): Promise<void> => {
       const call = extrinsicFn(...args)
@@ -52,19 +52,48 @@ export const useExtrinsicAs = <
       return new Promise((resolve, reject) => {
         call
           .signAndSend(addressOrPair, ({ status, events, dispatchError }) => {
-            // Reject on Errors
-            if (dispatchError) reject(dispatchError)
-
-            // Resolve on Success
-            if (status.isInBlock || status.isFinalized) {
-              const successEvents = events
-                // find/filter for failed events
-                .filter(({ event }) =>
-                  api.events.system.ExtrinsicSuccess.is(event),
-                )
-              if (successEvents.length > 0) {
-                resolve()
+            if (dispatchError) {
+              if (dispatchError.isModule) {
+                const { docs, method, section } =
+                  extrinsicFn.meta.registry.findMetaError(
+                    dispatchError.asModule,
+                  )
+                reject(new Error(`${section}.${method}: ${docs.join(" ")}`))
+              } else {
+                console.error("Unhandled dispatchError", dispatchError)
+                reject(dispatchError)
               }
+            }
+
+            switch (status.type) {
+              // TODO wait for finalization or inform user about it?
+              case "InBlock":
+                {
+                  console.log("Block: ", status.asInBlock.toHex())
+                  const successEvents = events.filter(({ event }) =>
+                    api.events.system.ExtrinsicSuccess.is(event),
+                  )
+                  if (successEvents.length > 0) {
+                    resolve()
+                  } else {
+                    // In block or finalized but not successfully
+                    reject(new Error("No Success Event"))
+                  }
+                }
+                break
+
+              case "Finalized":
+              case "Retracted":
+              case "Usurped":
+              case "Invalid":
+              case "Dropped":
+              case "Future":
+              case "Ready":
+                console.log("Status not handled", { status: status.toHuman() })
+                break
+              case "Broadcast":
+                console.log("Broadcast", status.asBroadcast[0].toHex())
+                break
             }
           })
           .catch((error) => reject(error))

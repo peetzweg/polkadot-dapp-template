@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <App />
           </KeyringProvider>
         </APIProvider>
-        <Toaster />
+        <Toaster position="bottom-center" />
       </QueryClientProvider>
     </ThemeProvider>
   </React.StrictMode>,
