@@ -1,0 +1,14 @@
+{
+  "name": "verifiable",
+  "version": "0.1.0",
+  "files": [
+    "verifiable_bg.wasm",
+    "verifiable.js",
+    "verifiable.d.ts"
+  ],
+  "module": "verifiable.js",
+  "types": "verifiable.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
